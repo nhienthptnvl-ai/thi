@@ -10,11 +10,14 @@
     .card{background:#fff;border-radius:24px;padding:30px;max-width:500px;margin:30px auto;box-shadow:0 15px 45px rgba(0,0,0,.15)}
     h1{text-align:center;color:#667eea;font-size:24px;margin-bottom:8px}
     .slogan{text-align:center;color:#888;font-style:italic;margin-bottom:20px}
+    .trangthai{padding:12px;border-radius:12px;margin-bottom:15px;text-align:center;font-weight:500}
+    .tot{background:#e8f8e8;color:#27ae60;border-left:4px solid #27ae60}
     .an{display:none!important}
     input{width:100%;padding:13px;border:2px solid #eee;border-radius:12px;font-size:16px;margin:8px 0}
-    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer}
-    .btn-xanh{background:#27ae60;color:#fff;margin-top:10px}
+    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.2s}
+    button:hover{opacity:.92}
     .btn-tim{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;margin-top:8px}
+    .btn-xanh{background:#27ae60;color:#fff;margin-top:10px}
     .btn-cam{background:#f5a623;color:#fff;margin-top:20px}
     .cau{padding:15px;background:#f9f9f9;border-radius:12px;margin:15px 0}
     .lua-chon{display:block;padding:10px;margin:6px 0;border:2px solid #ddd;border-radius:8px;cursor:pointer}
@@ -22,6 +25,7 @@
     .kq{margin-top:20px;padding:20px;border-radius:12px;text-align:center}
     .dung{background:#e8f8e8;color:#27ae60}
     .sai{background:#ffe8e8;color:#e74c3c}
+    .phancach{text-align:center;color:#bbb;margin:20px 0}
   </style>
 </head>
 <body>
@@ -31,82 +35,110 @@
 
   <!-- MÀN HÌNH BẮT ĐẦU -->
   <div id="man-dau">
-    <input type="text" id="ten" placeholder="Họ và tên học sinh">
+    <div class="trangthai tot">✅ Sẵn sàng — Nhập thông tin</div>
+    <input type="text" id="ho_ten" placeholder="Họ và tên học sinh">
     <input type="text" id="lop" placeholder="Lớp">
-    <input type="text" id="ma" placeholder="Mã đề: DE001" oninput="this.value=this.value.toUpperCase()">
-    <button class="btn-tim" onclick="batDau()">Bắt đầu làm bài</button>
-    <p style="text-align:center;margin-top:10px;color:#888">💡 Thử mã: <b>DE001</b></p>
+    <p class="phancach">——— Nhập mã đề để làm bài ———</p>
+    <input type="text" id="ma_de" placeholder="VD: DEMO" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn-tim" onclick="kiemTraMa()">🔍 Kiểm tra mã đề</button>
+    <div id="thongbao" style="margin-top:12px"></div>
+    <button id="btn-vao" class="btn-xanh an" onclick="vaoLamBai()">✅ Vào làm bài ngay</button>
   </div>
 
   <!-- MÀN HÌNH LÀM BÀI -->
   <div id="man-lam" class="an">
-    <h3 id="ten-de"></h3>
-    <p id="thong-tin" style="color:#666;margin-bottom:15px"></p>
-    <div id="danh-cau"></div>
+    <h3 id="ten_de"></h3>
+    <p id="thong_tin_hs" style="color:#666;margin-bottom:15px"></p>
+    <div id="danh_sach_cau"></div>
     <button class="btn-cam" onclick="nopBai()">📤 Nộp bài & Xem điểm</button>
   </div>
 
   <!-- MÀN HÌNH KẾT QUẢ -->
   <div id="man-kq" class="an">
-    <div id="noi-dung-kq"></div>
+    <div id="noi_dung_kq"></div>
     <button class="btn-tim" onclick="lamLai()">🔄 Làm lại</button>
   </div>
 </div>
 
 <script>
 // ========== DANH SÁCH ĐỀ ==========
-const DE = {
-  "DE001": {
-    ten: "Đề kiểm tra mẫu",
-    cau: [
-      {q: "15 + 9 = ?", a:["22","23","24","25"], d:3},
-      {q: "Thủ đô Việt Nam?", a:["TP.HCM","Hà Nội","Đà Nẵng","Huế"], d:2},
-      {q: "Ngày 1/5 là ngày gì?", a:["Tết Nguyên Đán","Ngày Quốc tế Phụ nữ","Ngày Quốc tế Lao động","Ngày Nhà giáo Việt Nam"], d:3}
+const DANH_SACH_DE = {
+  "DEMO": {
+    ten_de: "Đề thử nghiệm",
+    cau_hoi: [
+      {q: "Câu 1: 15 + 9 = ?", a:["22","23","24","25"], d:3},
+      {q: "Câu 2: Thủ đô Việt Nam là đâu?", a:["TP.HCM","Hà Nội","Đà Nẵng","Huế"], d:2}
     ]
   }
+  // Thêm đề mới theo mẫu trên
 };
 
-let hs = {ten:"", lop:"", ma:""};
-let traLoi = {};
+let deChon = null;
+let dapAnHS = {};
+let thongTin = {hoten:"", lop:""};
 
-function batDau(){
-  hs.ten = document.getElementById("ten").value.trim();
-  hs.lop = document.getElementById("lop").value.trim();
-  hs.ma = document.getElementById("ma").value.trim();
+function kiemTraMa(){
+  const ma = document.getElementById("ma_de").value.trim();
+  const hoten = document.getElementById("ho_ten").value.trim();
+  const lop = document.getElementById("lop").value.trim();
+  const tb = document.getElementById("thongbao");
+  const btn = document.getElementById("btn-vao");
+  
+  btn.classList.add("an");
+  deChon = null;
 
-  if(!hs.ten || !hs.lop) return alert("Nhập Họ tên + Lớp");
-  if(!hs.ma) return alert("Nhập mã đề");
-  if(!DE[hs.ma]) return alert("Mã đề không tồn tại\n💡 Thử: DE001");
+  if(!hoten || !lop){
+    tb.innerHTML = '<p style="color:#e74c3c">⚠️ Nhập họ tên và lớp</p>';
+    return;
+  }
+  if(!ma){
+    tb.innerHTML = '<p style="color:#e74c3c">⚠️ Nhập mã đề</p>';
+    return;
+  }
+  if(!DANH_SACH_DE[ma]){
+    tb.innerHTML = `<p style="color:#e74c3c">❌ Mã đề ${ma} không tồn tại</p>`;
+    return;
+  }
 
+  thongTin = {hoten, lop};
+  deChon = DANH_SACH_DE[ma];
+  tb.innerHTML = `<p style="color:#27ae60">✅ ${deChon.ten_de} — ${deChon.cau_hoi.length} câu</p>`;
+  btn.classList.remove("an"); // Hiện nút Vào làm bài
+}
+
+function vaoLamBai(){
+  if(!deChon) return alert("Kiểm tra mã đề trước!");
+  
   // Ẩn màn hình đầu → hiện bài làm
   document.getElementById("man-dau").classList.add("an");
   document.getElementById("man-lam").classList.remove("an");
-  document.getElementById("ten-de").innerText = DE[hs.ma].ten;
-  document.getElementById("thong-tin").innerText = `${hs.ten} — Lớp ${hs.lop}`;
+  
+  document.getElementById("ten_de").innerText = deChon.ten_de;
+  document.getElementById("thong_tin_hs").innerText = `${thongTin.hoten} — Lớp ${thongTin.lop}`;
   
   // Vẽ các câu hỏi
   let html = "";
-  DE[hs.ma].cau.forEach((cau, i)=>{
+  deChon.cau_hoi.forEach((cau, i)=>{
     html += `<div class="cau"><p><b>Câu ${i+1}:</b> ${cau.q}</p>`;
     cau.a.forEach((ans, j)=>{
       let c = String.fromCharCode(65+j);
-      html += `<label class="lua-chon" id="chon-${i+1}-${j}" onclick="chon(${i+1},${j})">${c}. ${ans}</label>`;
+      html += `<label class="lua-chon" id="chon-${i+1}-${j}" onclick="chonDapAn(${i+1},${j})">${c}. ${ans}</label>`;
     });
     html += `</div>`;
   });
-  document.getElementById("danh-cau").innerHTML = html;
+  document.getElementById("danh_sach_cau").innerHTML = html;
 }
 
-function chon(cau, vt){
-  traLoi[cau] = vt;
+function chonDapAn(cau, vt){
+  dapAnHS[cau] = vt;
   for(let i=0;i<4;i++) document.getElementById(`chon-${cau}-${i}`)?.classList.remove("chon");
   document.getElementById(`chon-${cau}-${vt}`).classList.add("chon");
 }
 
 function nopBai(){
-  let d = 0, t = DE[hs.ma].cau.length, chiTiet = "";
+  let d=0, t=deChon.cau_hoi.length, chiTiet="";
   for(let i=0;i<t;i++){
-    let cau = DE[hs.ma].cau[i], traloi = traLoi[i+1];
+    let cau = deChon.cau_hoi[i], traloi = dapAnHS[i+1];
     let dung = traloi === cau.d;
     if(dung) d++;
     let chon = traloi!==undefined ? String.fromCharCode(65+traloi) : "Chưa chọn";
@@ -119,10 +151,10 @@ function nopBai(){
 
   document.getElementById("man-lam").classList.add("an");
   document.getElementById("man-kq").classList.remove("an");
-  document.getElementById("noi-dung-kq").innerHTML = `
+  document.getElementById("noi_dung_kq").innerHTML = `
     <div class="kq ${mau}">
-      <h3>🎉 Kết quả</h3>
-      <p><strong>${hs.ten}</strong> — ${hs.lop}</p>
+      <h3>🎉 Kết quả bài làm</h3>
+      <p><strong>${thongTin.hoten}</strong> — Lớp ${thongTin.lop}</p>
       <p style="font-size:36px;font-weight:bold;margin:10px 0">${diem}/10</p>
       <p style="font-size:18px">${xep}</p>
       <p>Đúng ${d}/${t} câu</p>
@@ -135,15 +167,15 @@ function nopBai(){
 function lamLai(){
   document.getElementById("man-kq").classList.add("an");
   document.getElementById("man-dau").classList.remove("an");
-  document.getElementById("ten").value = "";
+  document.getElementById("ho_ten").value = "";
   document.getElementById("lop").value = "";
-  document.getElementById("ma").value = "";
-  traLoi = {};
+  document.getElementById("ma_de").value = "";
+  dapAnHS = {};
 }
 
 window.onload = ()=>{
   let m = new URLSearchParams(location.search).get("m");
-  if(m) document.getElementById("ma").value = m.toUpperCase();
+  if(m) document.getElementById("ma_de").value = m.toUpperCase();
 };
 </script>
 </body>
