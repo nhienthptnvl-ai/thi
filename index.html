@@ -13,7 +13,7 @@
     .trangthai { padding: 14px; border-radius: 12px; margin-bottom: 20px; text-align: center; font-weight: 500; }
     .dang { background: #e6f2ff; color: #0066cc; border-left: 4px solid #0066cc; }
     .tot { background: #e8f8e8; color: #27ae60; border-left: 4px solid #27ae60; }
-    .sai { background: #ffe8e8; color: #e74c3c; border-left: 4px solid #e74c3c; }
+    .sai { background: #fff3cd; color: #856404; border-left: 4px solid #f5a623; }
     input { width: 100%; padding: 14px; border: 2px solid #e8e8e8; border-radius: 12px; font-size: 16px; margin: 8px 0 16px; }
     button { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
     button:hover { opacity: 0.92; }
@@ -21,8 +21,6 @@
     .btn-xanh { background: #27ae60; color: white; margin-top: 10px; }
     .an { display: none !important; }
     .phancach { text-align: center; color: #bbb; margin: 24px 0; }
-    .thongbao { margin-top: 12px; }
-    .canhbao { color: #f5a623; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -30,129 +28,89 @@
     <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
     <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
 
-    <div id="trangthai" class="trangthai dang">🔄 Đang khởi tạo...</div>
+    <div id="trangthai" class="trangthai dang">✅ Sẵn sàng — Nhập mã đề</div>
     <button id="btn-giaovien" class="btn-chinh an" onclick="vaoGiaoVien()">👨‍🏫 Tôi là Giáo viên</button>
     
     <p class="phancach">——— Nhập mã đề để làm bài ———</p>
-    <input type="text" id="ma_de" placeholder="VD: DE12345" oninput="this.value=this.value.toUpperCase()">
+    <input type="text" id="ma_de" placeholder="VD: DEMO" oninput="this.value=this.value.toUpperCase()">
     <button class="btn-chinh" onclick="kiemTraMa()">🔍 Kiểm tra mã đề</button>
-    <div id="thongbao" class="thongbao"></div>
+    <div id="thongbao" style="margin-top:12px;"></div>
     <button id="vao-lambai" class="btn-xanh an" onclick="vaoLamBai()">✅ Vào làm bài ngay</button>
   </div>
 
   <script>
-    // ========== THÔNG TIN KẾT NỐI ==========
-    const SUPABASE_URL = 'https://wdjkafeuiufgtbklada.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_12tANZOMBker_QUzHuWeVQ_eErLAGHm';
-    // ========================================
+    // ========== DANH SÁCH ĐỀ (LƯU TRỰC TIẾP) ==========
+    const DANH_SACH_DE = {
+      "DEMO": {
+        ten_de: "Đề thử nghiệm",
+        cau_hoi: [
+          {
+            noi_dung: "Câu 1: 2 + 3 = ?",
+            lua_chon: ["3", "4", "5", "6"],
+            dap_an_dung: 2
+          },
+          {
+            noi_dung: "Câu 2: Thủ đô của Việt Nam là?",
+            lua_chon: ["TP.HCM", "Hà Nội", "Đà Nẵng", "Huế"],
+            dap_an_dung: 2
+          }
+        ]
+      }
+      // Thêm đề khác tại đây: "MA_DE": { ten_de: "...", cau_hoi: [...] }
+    };
 
-    let supabaseClient = null;
     let deChon = null;
 
-    // === TẢI THƯ VIỆN BẰNG <script> TRỰC TIẾP ===
-    async function taiThuVien() {
-      const el = document.getElementById('trangthai');
-      const nguon = [
-        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.1/dist/supabase.min.js',
-        'https://unpkg.com/@supabase/supabase-js@2.45.1/dist/umd/supabase.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.45.1/supabase.min.js'
-      ];
-      
-      for (const url of nguon) {
-        try {
-          el.innerHTML = `🔄 Đang tải thư viện...`;
-          const script = document.createElement('script');
-          script.src = url;
-          document.head.appendChild(script);
-          
-          // Chờ tải xong
-          for (let i = 0; i < 50; i++) {
-            if (typeof supabase !== 'undefined') return true;
-            await new Promise(r => setTimeout(r, 100));
-          }
-        } catch { continue; }
-      }
-      return false;
-    }
-
-    async function khoiTao() {
-      const el = document.getElementById('trangthai');
-      
-      if (!await taiThuVien()) {
-        el.className = 'trangthai sai';
-        el.innerHTML = '❌ Không tải được thư viện<br><small>Kiểm tra mạng hoặc tắt chặn quảng cáo</small>';
-        return;
-      }
-      
-      el.innerHTML = '🔄 Đang kết nối CSDL...';
-      
-      try {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-          auth: { persistSession: false }
-        });
-
-        const { data, error } = await supabaseClient
-          .from('de_kiem_tra')
-          .select('ma_de, ten_de')
-          .limit(100);
-
-        if (error) throw error;
-
-        el.className = 'trangthai tot';
-        el.innerHTML = `✅ Kết nối thành công — ${data.length} đề`;
-        document.getElementById('btn-giaovien').classList.remove('an');
-
-        const ma = new URLSearchParams(window.location.search).get('m');
-        if (ma) {
-          document.getElementById('ma_de').value = ma.toUpperCase();
-          kiemTraMa();
-        }
-
-      } catch (err) {
-        el.className = 'trangthai sai';
-        el.innerHTML = `❌ Lỗi: ${err.message}<br>
-          <small class="canhbao">
-          1. Đã chạy SQL tạo bảng trên Supabase chưa?<br>
-          2. URL & KEY đúng chưa?
-          </small>`;
-      }
-    }
-
-    async function kiemTraMa() {
+    function kiemTraMa() {
       const ma = document.getElementById('ma_de').value.trim();
       const tb = document.getElementById('thongbao');
       const btn = document.getElementById('vao-lambai');
-      tb.innerHTML = ''; btn.classList.add('an'); deChon = null;
+      const tt = document.getElementById('trangthai');
+      
+      tb.innerHTML = '';
+      btn.classList.add('an');
+      deChon = null;
 
-      if (!ma) return tb.innerHTML = '<p style="color:#e74c3c">⚠️ Nhập mã đề</p>';
-      if (!supabaseClient) return tb.innerHTML = '<p style="color:#e74c3c">❌ Chưa kết nối CSDL</p>';
-
-      const { data, error } = await supabaseClient
-        .from('de_kiem_tra')
-        .select('*')
-        .eq('ma_de', ma)
-        .single();
-
-      if (error || !data) {
-        tb.innerHTML = `<p style="color:#e74c3c">❌ Mã đề ${ma} không tồn tại</p>`;
+      if (!ma) {
+        tb.innerHTML = '<p style="color:#e74c3c">⚠️ Vui lòng nhập mã đề</p>';
         return;
       }
 
-      deChon = data;
-      tb.innerHTML = `<p style="color:#27ae60">✅ ${data.ten_de} — ${data.cau_hoi.length} câu</p>`;
-      btn.classList.remove('an');
+      if (DANH_SACH_DE[ma]) {
+        deChon = DANH_SACH_DE[ma];
+        tt.className = 'trangthai tot';
+        tt.innerHTML = `✅ Đã tìm thấy: ${deChon.ten_de}`;
+        tb.innerHTML = `<p style="color:#27ae60">✅ ${deChon.ten_de} — ${deChon.cau_hoi.length} câu</p>`;
+        btn.classList.remove('an');
+        document.getElementById('btn-giaovien').classList.remove('an');
+      } else {
+        tt.className = 'trangthai sai';
+        tt.innerHTML = '❌ Mã đề không tồn tại';
+        tb.innerHTML = `<p style="color:#e74c3c">❌ Mã đề <strong>${ma}</strong> không tồn tại</p>
+          <p style="color:#f5a623; margin-top:8px;">💡 Thử gõ: <strong>DEMO</strong></p>`;
+      }
     }
 
     function vaoLamBai() {
-      if (!deChon) return alert('⚠️ Kiểm tra mã đề trước!');
-      alert('✅ Đã vào giao diện làm bài — phát triển tiếp');
+      if (!deChon) {
+        alert('⚠️ Kiểm tra mã đề trước!');
+        return;
+      }
+      alert(`✅ Vào làm bài: ${deChon.ten_de}\nCó ${deChon.cau_hoi.length} câu`);
     }
 
     function vaoGiaoVien() {
       alert('✅ Giao diện Giáo viên — Tạo đề & Quản lý điểm');
     }
 
-    window.onload = khoiTao;
+    // Tự điền mã nếu có trong link ?m=DEMO
+    window.onload = function() {
+      const m = new URLSearchParams(window.location.search).get('m');
+      if (m) {
+        document.getElementById('ma_de').value = m.toUpperCase();
+        kiemTraMa();
+      }
+    };
   </script>
 </body>
 </html>
