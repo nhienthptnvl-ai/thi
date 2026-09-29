@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thầy Nhiên Nguyễn Huệ</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
@@ -30,7 +29,7 @@
     <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
     <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
 
-    <div id="trangthai" class="trangthai dang">🔄 Đang kết nối...</div>
+    <div id="trangthai" class="trangthai dang">🔄 Đang tải thư viện...</div>
     <button id="btn-giaovien" class="btn-chinh an" onclick="vaoGiaoVien()">👨‍🏫 Tôi là Giáo viên</button>
     
     <p class="phancach">——— Nhập mã đề để làm bài ———</p>
@@ -41,20 +40,56 @@
   </div>
 
   <script>
-    // ========== THÔNG TIN CỦA THẦY ==========
+    // ========== THÔNG TIN KẾT NỐI SUPABASE ==========
     const SUPABASE_URL = 'https://wdjkafeuiufgtbklada.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_12tANZOMBker_QUzHuWeVQ_eErLAGHm';
-    // ========================================
+    // ================================================
 
     let supabaseClient = null;
     let deChon = null;
 
+    // === TẢI THƯ VIỆN TỪ NHIỀU NGUỒN ===
+    async function taiThuVien() {
+      const el = document.getElementById('trangthai');
+      const nguon = [
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js',
+        'https://unpkg.com/@supabase/supabase-js@2.45.1/dist/umd/supabase.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.45.1/supabase.min.js'
+      ];
+      
+      for (const url of nguon) {
+        try {
+          el.innerHTML = `🔄 Đang tải từ: ${url.split('/')[2]}`;
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const code = await res.text();
+          const script = document.createElement('script');
+          script.textContent = code;
+          document.head.appendChild(script);
+          return true;
+        } catch { continue; }
+      }
+      return false;
+    }
+
     async function khoiTao() {
       const el = document.getElementById('trangthai');
       
+      if (!await taiThuVien()) {
+        el.className = 'trangthai sai';
+        el.innerHTML = '❌ Không tải được thư viện → Kiểm tra mạng';
+        return;
+      }
+      
+      // Chờ thư viện sẵn sàng
+      for (let i = 0; i < 20; i++) {
+        if (typeof supabase !== 'undefined') break;
+        await new Promise(r => setTimeout(r, 150));
+      }
+      
       if (typeof supabase === 'undefined') {
         el.className = 'trangthai sai';
-        el.innerHTML = '❌ Thư viện chưa tải được → Tải lại trang';
+        el.innerHTML = '❌ Thư viện chưa sẵn sàng → Tải lại trang';
         return;
       }
       
@@ -86,7 +121,7 @@
         el.className = 'trangthai sai';
         el.innerHTML = `❌ Lỗi: ${err.message}<br>
           <div class="huongdan">
-          1. Đã chạy SQL tạo 3 bảng trên Supabase chưa?<br>
+          1. Đã chạy SQL tạo bảng trên Supabase chưa?<br>
           2. URL & KEY đúng chưa?
           </div>`;
       }
@@ -99,7 +134,7 @@
       tb.innerHTML = ''; btn.classList.add('an'); deChon = null;
 
       if (!ma) return tb.innerHTML = '<p style="color:#e74c3c">⚠️ Nhập mã đề</p>';
-      if (!supabaseClient) return tb.innerHTML = '<p style="color:#e74c3c">❌ Chưa kết nối</p>';
+      if (!supabaseClient) return tb.innerHTML = '<p style="color:#e74c3c">❌ Chưa kết nối CSDL</p>';
 
       const { data, error } = await supabaseClient
         .from('de_kiem_tra')
@@ -118,7 +153,7 @@
     }
 
     function vaoLamBai() {
-      if (!deChon) return alert('Kiểm tra mã đề trước!');
+      if (!deChon) return alert('⚠️ Kiểm tra mã đề trước!');
       alert('✅ Đã vào giao diện làm bài — phát triển tiếp');
     }
 
