@@ -21,7 +21,8 @@
     .btn-xanh { background: #27ae60; color: white; margin-top: 10px; }
     .an { display: none !important; }
     .phancach { text-align: center; color: #bbb; margin: 24px 0; }
-    .huongdan { background: #fff9e6; padding: 14px; border-radius: 10px; border-left: 4px solid #f5a623; margin-top: 12px; font-size: 14px; line-height: 1.6; text-align: left; }
+    .thongbao { margin-top: 12px; }
+    .canhbao { color: #f5a623; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -29,44 +30,46 @@
     <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
     <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
 
-    <div id="trangthai" class="trangthai dang">🔄 Đang tải thư viện...</div>
+    <div id="trangthai" class="trangthai dang">🔄 Đang khởi tạo...</div>
     <button id="btn-giaovien" class="btn-chinh an" onclick="vaoGiaoVien()">👨‍🏫 Tôi là Giáo viên</button>
     
     <p class="phancach">——— Nhập mã đề để làm bài ———</p>
     <input type="text" id="ma_de" placeholder="VD: DE12345" oninput="this.value=this.value.toUpperCase()">
     <button class="btn-chinh" onclick="kiemTraMa()">🔍 Kiểm tra mã đề</button>
-    <div id="thongbao" style="margin-top:12px;"></div>
+    <div id="thongbao" class="thongbao"></div>
     <button id="vao-lambai" class="btn-xanh an" onclick="vaoLamBai()">✅ Vào làm bài ngay</button>
   </div>
 
   <script>
-    // ========== THÔNG TIN KẾT NỐI SUPABASE ==========
+    // ========== THÔNG TIN KẾT NỐI ==========
     const SUPABASE_URL = 'https://wdjkafeuiufgtbklada.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_12tANZOMBker_QUzHuWeVQ_eErLAGHm';
-    // ================================================
+    // ========================================
 
     let supabaseClient = null;
     let deChon = null;
 
-    // === TẢI THƯ VIỆN TỪ NHIỀU NGUỒN ===
+    // === TẢI THƯ VIỆN BẰNG <script> TRỰC TIẾP ===
     async function taiThuVien() {
       const el = document.getElementById('trangthai');
       const nguon = [
-        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js',
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.1/dist/supabase.min.js',
         'https://unpkg.com/@supabase/supabase-js@2.45.1/dist/umd/supabase.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.45.1/supabase.min.js'
       ];
       
       for (const url of nguon) {
         try {
-          el.innerHTML = `🔄 Đang tải từ: ${url.split('/')[2]}`;
-          const res = await fetch(url);
-          if (!res.ok) continue;
-          const code = await res.text();
+          el.innerHTML = `🔄 Đang tải thư viện...`;
           const script = document.createElement('script');
-          script.textContent = code;
+          script.src = url;
           document.head.appendChild(script);
-          return true;
+          
+          // Chờ tải xong
+          for (let i = 0; i < 50; i++) {
+            if (typeof supabase !== 'undefined') return true;
+            await new Promise(r => setTimeout(r, 100));
+          }
         } catch { continue; }
       }
       return false;
@@ -77,19 +80,7 @@
       
       if (!await taiThuVien()) {
         el.className = 'trangthai sai';
-        el.innerHTML = '❌ Không tải được thư viện → Kiểm tra mạng';
-        return;
-      }
-      
-      // Chờ thư viện sẵn sàng
-      for (let i = 0; i < 20; i++) {
-        if (typeof supabase !== 'undefined') break;
-        await new Promise(r => setTimeout(r, 150));
-      }
-      
-      if (typeof supabase === 'undefined') {
-        el.className = 'trangthai sai';
-        el.innerHTML = '❌ Thư viện chưa sẵn sàng → Tải lại trang';
+        el.innerHTML = '❌ Không tải được thư viện<br><small>Kiểm tra mạng hoặc tắt chặn quảng cáo</small>';
         return;
       }
       
@@ -120,10 +111,10 @@
       } catch (err) {
         el.className = 'trangthai sai';
         el.innerHTML = `❌ Lỗi: ${err.message}<br>
-          <div class="huongdan">
+          <small class="canhbao">
           1. Đã chạy SQL tạo bảng trên Supabase chưa?<br>
           2. URL & KEY đúng chưa?
-          </div>`;
+          </small>`;
       }
     }
 
