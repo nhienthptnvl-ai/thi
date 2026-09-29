@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thầy Nhiên Nguyễn Huệ</title>
-  <!-- Đảm bảo link hoạt động trên mọi thiết bị -->
-  <base target="_self">
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
     body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
@@ -14,8 +13,9 @@
     h1{text-align:center;color:#667eea;font-size:22px;margin-bottom:5px}
     .slogan{text-align:center;color:#888;font-style:italic;margin-bottom:20px}
     .an{display:none!important}
-    input{width:100%;padding:14px;border:2px solid #eee;border-radius:12px;font-size:16px;margin:8px 0}
-    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;margin:6px 0}
+    input,textarea{width:100%;padding:12px;border:2px solid #eee;border-radius:10px;font-size:15px;margin:6px 0 12px}
+    button{width:100%;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;margin:6px 0;transition:.2s}
+    button:hover{opacity:.92}
     .btn-tim{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
     .btn-xanh{background:#27ae60;color:#fff}
     .btn-cam{background:#f5a623;color:#fff}
@@ -31,13 +31,16 @@
     .kq{margin-top:20px;padding:25px;border-radius:12px;text-align:center}
     .dung{background:#e8f8e8;color:#27ae60}
     .sai{background:#ffe8e8;color:#e74c3c}
-    .link-kq{background:#f0f4ff;padding:12px;border-radius:8px;font-family:monospace;word-break:break-all;margin:10px 0;font-size:13px}
+    .link-kq{background:#f0f4ff;padding:12px;border-radius:8px;font-family:monospace;word-break:break-all;margin:10px 0;font-size:12px;line-height:1.5}
     #qr-code{text-align:center;margin:15px 0}
-    .thong-bao{padding:10px;border-radius:8px;margin:10px 0;text-align:center}
+    .thong-bao{padding:12px;border-radius:8px;margin:10px 0;text-align:center}
     .thanhcong{background:#e8f8e8;color:#27ae60}
     .loi{background:#ffe8e8;color:#e74c3c}
     .canhbao{background:#fff3cd;color:#856404}
-    .huong-dan{background:#f8f9fa;padding:15px;border-radius:10px;margin:15px 0;font-size:14px;line-height:1.6}
+    .ma-demo{background:#f0f4ff;padding:10px;border-radius:8px;margin:10px 0}
+    .dong-phan{display:flex;gap:8px;align-items:center}
+    .dong-phan input{flex:1;margin:0}
+    .dong-phan button{width:auto;padding:10px 12px;margin:0}
   </style>
 </head>
 <body>
@@ -47,27 +50,28 @@
 
   <!-- MÀN HÌNH CHỌN -->
   <div id="man-chon">
-    <button class="btn-tim" onclick="moGiaoVien()">👨‍🏫 Tôi là Giáo viên</button>
+    <button class="btn-tim" onclick="moGiaoVien()">👨‍🏫 Tạo đề & Quản lý</button>
     <p style="text-align:center;margin:20px 0;color:#bbb">—————— hoặc ——————</p>
-    <button class="btn-xanh" onclick="moHocSinh()">🎓 Tôi là Học sinh</button>
+    <button class="btn-xanh" onclick="moHocSinh()">🎓 Học sinh làm bài</button>
+    
+    <div class="ma-demo">
+      <p style="font-weight:bold;margin-bottom:8px">✅ Đề có sẵn thử ngay:</p>
+      <p>Mã: <strong>DEMO</strong></p>
+      <p>Link: <span id="link-demo"></span></p>
+    </div>
   </div>
 
-  <!-- GIAO DIỆN GIÁO VIÊN -->
+  <!-- GIÁO VIÊN -->
   <div id="man-gv" class="an">
     <div class="tab">
-      <button id="tab-ds" class="dang" onclick="chuyenTab('ds')">📋 Danh sách đề</button>
-      <button id="tab-tao" class="bin" onclick="chuyenTab('tao')">✏️ Tạo đề</button>
+      <button id="tab-tao" class="dang" onclick="chuyenTab('tao')">✏️ Tạo đề mới</button>
+      <button id="tab-ds" class="bin" onclick="chuyenTab('ds')">📋 Danh sách đề</button>
     </div>
 
-    <div id="gv-ds">
-      <h3>Danh sách đề</h3>
-      <div id="danhsach-de"></div>
-    </div>
-
-    <div id="gv-tao" class="an">
-      <h3>Tạo đề mới</h3>
-      <input type="text" id="ten-de" placeholder="Tên đề: Kiểm tra Toán">
-      <input type="text" id="ma-de" placeholder="Mã đề: TOAN01 (tự tạo)">
+    <div id="gv-tao">
+      <h3>Tạo đề kiểm tra</h3>
+      <input type="text" id="ten-de" placeholder="Tên đề: Kiểm tra Toán giữa kỳ">
+      <input type="text" id="ma-de" placeholder="Mã đề: TOAN01 (tự đặt)">
       
       <div id="danh-cau">
         <div class="cau">
@@ -81,38 +85,41 @@
         </div>
       </div>
       
-      <button class="btn-cam" onclick="themCau()">➕ Thêm câu</button>
-      <button class="btn-xanh" onclick="luuDe()">✅ Lưu & Tạo link</button>
+      <button class="btn-cam" onclick="themCau()">➕ Thêm câu hỏi</button>
+      <button class="btn-xanh" onclick="taoLink()">✅ Tạo link gửi học sinh</button>
       
-      <div id="kq-tao" class="an">
-        <div class="thong-bao thanhcong">✅ Tạo đề thành công!</div>
+      <div id="kq-link" class="an">
+        <div class="thong-bao thanhcong">✅ Link đã tạo — <strong>gửi trực tiếp cho học sinh là vào được ngay!</strong></div>
         
-        <div class="huong-dan">
-          <p><strong>📤 Cách gửi cho học sinh:</strong></p>
-          <p><strong>Cách 1 — Gõ tay nhanh:</strong> Mở trang web → nhập mã: <span id="ma-gui" style="font-weight:bold;color:#e74c3c"></span></p>
-          <p><strong>Cách 2 — Nhấn link:</strong></p>
-        </div>
+        <p style="font-weight:bold;margin-top:15px">🔗 Link chia sẻ (dán Zalo/Facebook):</p>
+        <div class="link-kq" id="link-kq"></div>
+        <button class="btn-tim" onclick="saoChepLink()">📋 Sao chép link</button>
         
-        <div class="link-kq" id="link-gui"></div>
-        <button class="btn-tim" onclick="saoChepLink()">📋 Sao chép link gửi Zalo/Facebook</button>
-        
-        <p style="margin:15px 0 5px 0;font-weight:bold">📱 Quét mã QR:</p>
+        <p style="font-weight:bold;margin-top:15px">📱 Hoặc quét mã QR:</p>
         <div id="qr-code"></div>
-        <button class="btn-cam" onclick="taiQR()" style="margin-top:5px">💾 Lưu ảnh QR gửi học sinh</button>
+        <button class="btn-cam" onclick="taiQR()" style="margin-top:5px">💾 Lưu ảnh QR</button>
+        
+        <p style="color:#666;font-size:13px;margin-top:15px">💡 <strong>Đề được nhúng trực tiếp trong link</strong> → học sinh mở link là có đề ngay, không cần lưu gì thêm!</p>
       </div>
     </div>
 
-    <button class="btn-xam" onclick="quayLai()">🔙 Quay lại</button>
+    <div id="gv-ds" class="an">
+      <h3>Danh sách đề đã tạo trên máy này</h3>
+      <div id="danhsach-de"></div>
+      <p style="color:#888;font-size:13px;margin-top:15px">⚠️ Lưu trên máy giáo viên → gửi link cho học sinh là dùng được mọi máy</p>
+    </div>
+
+    <button class="btn-xam" onclick="quayLai()" style="margin-top:20px">🔙 Quay lại</button>
   </div>
 
-  <!-- GIAO DIỆN HỌC SINH -->
+  <!-- HỌC SINH -->
   <div id="man-hs" class="an">
     <div id="thong-bao-hs" class="thong-bao canhbao">
-      💡 Nhập thông tin → nhập mã đề → nhấn Bắt đầu
+      💡 Mở link giáo viên gửi hoặc nhập mã đề → Bắt đầu làm bài
     </div>
     
-    <input type="text" id="ten-hs" placeholder="Họ và tên (VD: Nguyễn Văn An)">
-    <input type="text" id="lop-hs" placeholder="Lớp (VD: 5A)">
+    <input type="text" id="ten-hs" placeholder="Họ và tên học sinh">
+    <input type="text" id="lop-hs" placeholder="Lớp">
     <input type="text" id="ma-nhap" placeholder="Mã đề" oninput="this.value=this.value.toUpperCase().trim()">
     
     <button class="btn-tim" onclick="batDau()">🚀 Bắt đầu làm bài</button>
@@ -131,73 +138,97 @@
       <button class="btn-tim" onclick="lamLai()">🔄 Làm bài khác</button>
     </div>
 
-    <button class="btn-xam" onclick="quayLai()">🔙 Quay lại</button>
+    <button class="btn-xam" onclick="quayLai()" style="margin-top:20px">🔙 Quay lại</button>
   </div>
 </div>
 
 <script>
-// ========== DỮ LIỆU — LƯU TRÊN TRÌNH DUYỆT ==========
-let DANH_DE = {};
-const KHOA_DL = 'dulieu_de_thi';
+// ========== DỮ LIỆU MẪU LUÔN CÓ SẴN ==========
+const DE_MAU = {
+  "DEMO": {
+    ten: "Đề thử nghiệm — Luôn sẵn sàng",
+    cau: [
+      {q: "Câu 1: 15 + 9 bằng bao nhiêu?", a:["22","23","24","25"], d:3},
+      {q: "Câu 2: Thủ đô Việt Nam là đâu?", a:["TP.Hồ Chí Minh","Hà Nội","Đà Nẵng","Cần Thơ"], d:2}
+    ]
+  }
+};
 
-function taiDuLieu(){
-  const luu = localStorage.getItem(KHOA_DL);
-  if(luu) try{ DANH_DE = JSON.parse(luu); }catch(e){ DANH_DE = {}; }
+// Lưu đề giáo viên tạo trên máy
+let DE_DA_LUU = {};
+const KHOA = 'danhsach_de_giao_vien';
+function layDuLieuLuu(){
+  const d = localStorage.getItem(KHOA);
+  if(d) try{ DE_DA_LUU = JSON.parse(d); }catch(e){ DE_DA_LUU = {}; }
 }
 function luuDuLieu(){
-  localStorage.setItem(KHOA_DL, JSON.stringify(DANH_DE));
+  localStorage.setItem(KHOA, JSON.stringify(DE_DA_LUU));
+}
+
+// Mã hóa/giải mã đề nhúng vào link
+function maHoaDe(de){
+  const chuoi = JSON.stringify(de);
+  // Nén + mã hóa an toàn
+  const nen = pako.deflate(chuoi, {to:'string'});
+  return btoa(encodeURIComponent(nen));
+}
+function giaiMaDe(chuoiMaHoa){
+  try{
+    const giai = decodeURIComponent(atob(chuoiMaHoa));
+    const chuoi = pako.inflate(giai, {to:'string'});
+    return JSON.parse(chuoi);
+  }catch{
+    return null;
+  }
 }
 
 // ========== CHUYỂN MÀN HÌNH ==========
+let DE_HIEN_TAI = null;
+let DAP_AN = {};
+let TT_HS = {ten:"", lop:""};
+
 function moGiaoVien(){
-  taiDuLieu();
+  layDuLieuLuu();
   document.getElementById("man-chon").classList.add("an");
   document.getElementById("man-gv").classList.remove("an");
   hienDS();
 }
 function moHocSinh(){
-  taiDuLieu();
   document.getElementById("man-chon").classList.add("an");
   document.getElementById("man-hs").classList.remove("an");
 }
 function quayLai(){
-  location.search = ''; // Xóa mã trên thanh địa chỉ
+  window.history.replaceState({}, '', window.location.pathname);
   location.reload();
 }
 function chuyenTab(tab){
-  document.getElementById("gv-ds").classList.toggle("an", tab!=="ds");
   document.getElementById("gv-tao").classList.toggle("an", tab!=="tao");
-  document.getElementById("tab-ds").classList.toggle("dang", tab==="ds");
-  document.getElementById("tab-ds").classList.toggle("bin", tab!=="ds");
+  document.getElementById("gv-ds").classList.toggle("an", tab!=="ds");
   document.getElementById("tab-tao").classList.toggle("dang", tab==="tao");
   document.getElementById("tab-tao").classList.toggle("bin", tab!=="tao");
+  document.getElementById("tab-ds").classList.toggle("dang", tab==="ds");
+  document.getElementById("tab-ds").classList.toggle("bin", tab!=="ds");
   if(tab==="ds") hienDS();
 }
 
-// ========== GIÁO VIÊN TẠO ĐỀ ==========
+// ========== GIÁO VIÊN TẠO LINK ==========
 function hienDS(){
   let html = "";
-  for(let ma in DANH_DE){
+  for(let ma in DE_DA_LUU){
     html += `<div style="padding:10px 0;border-bottom:1px solid #eee">
-      <strong>${ma}</strong> — ${DANH_DE[ma].ten} (${DANH_DE[ma].cau.length} câu)<br>
-      <small style="color:#666">Gửi: ${layLink(ma)}</small>
+      <strong>${ma}</strong> — ${DE_DA_LUU[ma].ten} (${DE_DA_LUU[ma].cau.length} câu)<br>
+      <small style="color:#666">✅ Tạo link → gửi học sinh là vào được ngay</small>
     </div>`;
   }
   document.getElementById("danhsach-de").innerHTML = html || "<p style='color:#888;text-align:center;padding:20px'>Chưa có đề nào → Tạo đề mới</p>";
 }
 
-function layLink(ma){
-  // Link NGẮN NHẤT có thể
-  const goc = window.location.origin + window.location.pathname;
-  return goc + "?m=" + ma;
-}
-
 function themCau(){
   const khung = document.getElementById("danh-cau");
-  const soCau = khung.children.length + 1;
+  const so = khung.children.length + 1;
   khung.innerHTML += `
     <div class="cau">
-      <strong>Câu ${soCau}</strong>
+      <strong>Câu ${so}</strong>
       <input type="text" class="nd" placeholder="Nội dung câu hỏi">
       <input type="text" class="a" placeholder="Đáp án A">
       <input type="text" class="b" placeholder="Đáp án B">
@@ -208,12 +239,11 @@ function themCau(){
   `;
 }
 
-function luuDe(){
+function taoLink(){
   const ma = document.getElementById("ma-de").value.trim().toUpperCase();
   const ten = document.getElementById("ten-de").value.trim();
   
   if(!ma || !ten) return alert("⚠️ Nhập mã đề + tên đề");
-  if(DANH_DE[ma] && !confirm(`Mã ${ma} đã có → Ghi đè?`)) return;
   
   const dsCau = [];
   document.querySelectorAll("#danh-cau .cau").forEach(d=>{
@@ -228,21 +258,24 @@ function luuDe(){
     }
   });
   
-  if(!dsCau.length) return alert("⚠️ Điền đầy đủ thông tin ít nhất 1 câu");
+  if(!dsCau.length) return alert("⚠️ Điền đầy đủ ít nhất 1 câu hỏi");
   
-  DANH_DE[ma] = {ten, cau: dsCau};
+  const de = {ma, ten, cau:dsCau};
+  DE_DA_LUU[ma] = {ten, cau:dsCau};
   luuDuLieu();
   
-  // Hiện link + QR
-  const link = layLink(ma);
-  document.getElementById("ma-gui").innerText = ma;
-  document.getElementById("link-gui").innerText = link;
-  document.getElementById("kq-tao").classList.remove("an");
+  // Tạo link có NHÚNG ĐỀ BÊN TRONG → học sinh mở là có ngay
+  const goc = window.location.origin + window.location.pathname;
+  const maHoa = maHoaDe(de);
+  const link = `${goc}?de=${maHoa}`;
+  
+  document.getElementById("link-kq").innerText = link;
+  document.getElementById("kq-link").classList.remove("an");
   
   // Tạo QR
   const khungQR = document.getElementById("qr-code");
   khungQR.innerHTML = "";
-  QRCode.toCanvas(document.createElement('canvas'), link, {width:180, margin:2}, function(err, canvas){
+  QRCode.toCanvas(document.createElement('canvas'), link, {width:180, margin:2}, (err, canvas)=>{
     if(!err) khungQR.appendChild(canvas);
   });
   
@@ -263,9 +296,9 @@ function luuDe(){
 }
 
 function saoChepLink(){
-  const link = document.getElementById("link-gui").innerText;
+  const link = document.getElementById("link-kq").innerText;
   navigator.clipboard.writeText(link).then(()=>{
-    alert("✅ Đã sao chép → Dán vào Zalo/Facebook gửi học sinh");
+    alert("✅ Đã sao chép → Gửi Zalo/Facebook là học sinh vào được ngay!");
   }).catch(()=>{
     prompt("📋 Sao chép thủ công:", link);
   });
@@ -281,47 +314,59 @@ function taiQR(){
 }
 
 // ========== HỌC SINH LÀM BÀI ==========
-let DE_DANG = null;
-let DAP_AN = {};
-let TT = {ten:"", lop:""};
-
 function batDau(){
   const ten = document.getElementById("ten-hs").value.trim();
   const lop = document.getElementById("lop-hs").value.trim();
-  const ma = document.getElementById("ma-nhap").value.trim();
+  const maNhap = document.getElementById("ma-nhap").value.trim();
   const tb = document.getElementById("thong-bao-hs");
   
   if(!ten || !lop){
     tb.className = "thong-bao loi";
-    tb.innerHTML = "⚠️ Nhập họ tên + lớp trước";
+    tb.innerHTML = "⚠️ Nhập họ tên + lớp";
     return;
   }
-  if(!ma){
-    tb.className = "thong-bao loi";
-    tb.innerHTML = "⚠️ Nhập mã đề";
-    return;
+  
+  // Ưu tiên đề từ link nhúng dữ liệu
+  const thamSo = new URLSearchParams(window.location.search);
+  const deNhung = thamSo.get('de');
+  let deTimThay = null;
+  
+  if(deNhung){
+    deTimThay = giaiMaDe(deNhung);
+    if(deTimThay) maNhap.value = deTimThay.ma;
   }
-  if(!DANH_DE[ma]){
+  
+  // Kiểm tra mã đề: link nhúng → đề mẫu → đề lưu trên máy
+  if(!deTimThay){
+    if(!maNhap){
+      tb.className = "thong-bao loi";
+      tb.innerHTML = "⚠️ Nhập mã đề hoặc mở link giáo viên gửi";
+      return;
+    }
+    deTimThay = DE_MAU[maNhap] || DE_DA_LUU[maNhap];
+  }
+  
+  if(!deTimThay){
     tb.className = "thong-bao loi";
-    tb.innerHTML = `❌ Mã <strong>${ma}</strong> không tồn tại<br>💡 Kiểm tra lại chữ viết hoa/thường hoặc nhấn link giáo viên gửi`;
+    tb.innerHTML = `❌ Mã <strong>${maNhap}</strong> không tồn tại<br>💡 Thử mã: <strong>DEMO</strong> hoặc kiểm tra link giáo viên gửi`;
     return;
   }
   
   // Vào bài làm
-  TT = {ten, lop};
-  DE_DANG = DANH_DE[ma];
+  TT_HS = {ten, lop};
+  DE_HIEN_TAI = deTimThay;
   DAP_AN = {};
   
   tb.className = "thong-bao thanhcong";
-  tb.innerHTML = `✅ Đã tìm thấy: <strong>${DE_DANG.ten}</strong> — ${DE_DANG.cau.length} câu`;
+  tb.innerHTML = `✅ Đã tìm thấy: <strong>${deTimThay.ten}</strong> — ${deTimThay.cau.length} câu`;
   
   document.getElementById("phan-lam").classList.remove("an");
   document.getElementById("phan-kq").classList.add("an");
-  document.getElementById("ten-de-hs").innerText = DE_DANG.ten;
+  document.getElementById("ten-de-hs").innerText = deTimThay.ten;
   document.getElementById("tt-hs").innerText = `${ten} — Lớp ${lop}`;
   
   let html = "";
-  DE_DANG.cau.forEach((c, i)=>{
+  deTimThay.cau.forEach((c, i)=>{
     html += `<div class="cau"><p><b>Câu ${i+1}:</b> ${c.q}</p>`;
     c.a.forEach((dap, j)=>{
       let chu = String.fromCharCode(65 + j);
@@ -339,10 +384,10 @@ function chon(cau, vt){
 }
 
 function nopBai(){
-  if(!DE_DANG) return;
-  let dung = 0, tong = DE_DANG.cau.length, chiTiet = "";
+  if(!DE_HIEN_TAI) return;
+  let dung = 0, tong = DE_HIEN_TAI.cau.length, chiTiet = "";
   for(let i=0;i<tong;i++){
-    let c = DE_DANG.cau[i], traloi = DAP_AN[i+1];
+    let c = DE_HIEN_TAI.cau[i], traloi = DAP_AN[i+1];
     let d = traloi === c.d;
     if(d) dung++;
     let chon = traloi!==undefined ? String.fromCharCode(65+traloi) : "Chưa chọn";
@@ -358,7 +403,7 @@ function nopBai(){
   document.getElementById("noi-dung-kq").innerHTML = `
     <div class="kq ${mau}">
       <h3>🎉 Kết quả</h3>
-      <p><strong>${TT.ten}</strong> — ${TT.lop}</p>
+      <p><strong>${TT_HS.ten}</strong> — ${TT_HS.lop}</p>
       <p style="font-size:40px;font-weight:bold;margin:15px 0">${diem}/10</p>
       <p style="font-size:20px">${xep}</p>
       <p>Đúng ${dung}/${tong} câu</p>
@@ -370,19 +415,25 @@ function nopBai(){
 
 function lamLai(){
   document.getElementById("phan-kq").classList.add("an");
-  document.getElementById("ma-nhap").value = "";
-  DE_DANG = null; DAP_AN = {};
+  DE_HIEN_TAI = null; DAP_AN = {};
 }
 
-// Tự điền mã khi mở link ?m=MA_DE
+// Tự động vào bài nếu có đề nhúng trong link
 window.onload = function(){
-  taiDuLieu();
+  layDuLieuLuu();
   const thamSo = new URLSearchParams(window.location.search);
+  const deNhung = thamSo.get('de');
   const ma = thamSo.get('m');
-  if(ma){
+  
+  // Hiển thị link demo
+  document.getElementById("link-demo").innerText = window.location.pathname + "?m=DEMO";
+  
+  if(deNhung || ma){
     moHocSinh();
-    document.getElementById("ma-nhap").value = ma.toUpperCase();
-    document.getElementById("thong-bao-hs").innerHTML = `✅ Đã nhận mã từ link: <strong>${ma.toUpperCase()}</strong><br>Nhập tên + lớp → nhấn Bắt đầu`;
+    if(ma) document.getElementById("ma-nhap").value = ma.toUpperCase();
+    if(deNhung){
+      document.getElementById("thong-bao-hs").innerHTML = "✅ Nhận đề từ link giáo viên gửi<br>Nhập tên + lớp → Bắt đầu làm bài";
+    }
   }
 };
 </script>
