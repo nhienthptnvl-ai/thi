@@ -3,32 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thầy Nhiên Nguyễn Huệ</title>
+  <title>Thầy Nhiên Nguyễn Huệ — Hệ thống kiểm tra</title>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
     body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
-    .khung{background:#fff;border-radius:24px;padding:35px;max-width:500px;margin:30px auto;box-shadow:0 15px 45px rgba(0,0,0,.15)}
-    h1{text-align:center;color:#667eea;font-size:24px;margin-bottom:5px}
-    .slogan{text-align:center;color:#888;font-style:italic;margin-bottom:25px}
+    .khung{background:#fff;border-radius:24px;padding:30px;max-width:580px;margin:20px auto;box-shadow:0 15px 45px rgba(0,0,0,.15)}
+    h1{text-align:center;color:#667eea;font-size:22px;margin-bottom:5px}
+    .slogan{text-align:center;color:#888;font-style:italic;margin-bottom:20px;font-size:14px}
     .an{display:none!important}
-    input{width:100%;padding:14px;border:2px solid #eee;border-radius:12px;font-size:16px;margin:8px 0}
-    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;transition:.2s}
+    input,textarea,select{width:100%;padding:12px;border:2px solid #eee;border-radius:10px;font-size:15px;margin:6px 0 12px}
+    button{width:100%;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;margin:6px 0;transition:.2s}
     button:hover{opacity:.92}
-    .btn-xanh{background:#27ae60;color:#fff;margin-top:10px}
-    .btn-tim{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;margin-top:8px}
-    .btn-cam{background:#f5a623;color:#fff;margin-top:20px}
-    .btn-xam{background:#eee;color:#333;margin-top:10px}
-    .cau{padding:18px;background:#f9f9f9;border-radius:14px;margin:15px 0}
-    .lua-chon{display:block;padding:12px;margin:8px 0;border:2px solid #ddd;border-radius:10px;cursor:pointer;transition:.2s}
-    .lua-chon:hover{border-color:#667eea;background:#f0f4ff}
-    .lua-chon.chon{border-color:#667eea;background:#eef2ff}
-    .kq{margin-top:20px;padding:25px;border-radius:14px;text-align:center}
-    .dung{background:#e8f8e8;color:#27ae60}
-    .sai{background:#ffe8e8;color:#e74c3c}
-    .tab{display:flex;gap:10px;margin-bottom:20px}
+    .btn-tim{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
+    .btn-xanh{background:#27ae60;color:#fff}
+    .btn-cam{background:#f5a623;color:#fff}
+    .btn-do{background:#e74c3c;color:#fff}
+    .btn-xam{background:#eee;color:#333}
+    .tab{display:flex;gap:8px;margin-bottom:15px}
     .tab button{flex:1}
     .tab button.dang{background:#667eea;color:#fff}
     .tab button.bin{background:#eee;color:#333}
+    .cau{padding:15px;background:#f9f9f9;border-radius:12px;margin:10px 0}
+    .lua-chon{display:block;padding:10px;margin:6px 0;border:2px solid #ddd;border-radius:8px;cursor:pointer}
+    .lua-chon.chon{border-color:#667eea;background:#eef2ff}
+    .kq{margin-top:20px;padding:20px;border-radius:12px;text-align:center}
+    .dung{background:#e8f8e8;color:#27ae60}
+    .sai{background:#ffe8e8;color:#e74c3c}
+    .thongbao{padding:10px;border-radius:8px;margin:10px 0}
+    .thanhcong{background:#e8f8e8;color:#27ae60}
+    .canhbao{background:#fff3cd;color:#856404}
+    .loi{background:#ffe8e8;color:#e74c3c}
+    .link-kq{background:#f0f4ff;padding:10px;border-radius:8px;word-break:break-all;margin:8px 0;font-family:monospace;font-size:13px}
+    #qr-code{text-align:center;margin:15px 0}
+    #qr-code img{border:8px solid #fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+    .danhsach-item{padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
+    .danhsach-item:hover{background:#f9f9f9}
+    .hang-cot{display:flex;gap:10px;align-items:center;margin:8px 0}
+    .hang-cot button{flex:initial;width:auto;padding:8px 12px;font-size:13px;margin:0}
+    label{font-weight:500;margin-top:8px;display:inline-block}
   </style>
 </head>
 <body>
@@ -36,31 +50,44 @@
   <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
   <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
 
-  <!-- BƯỚC 1: CHỌN VAI TRÒ -->
-  <div id="buoc-chon">
-    <button class="btn-tim" onclick="moGiaoVien()">👨‍🏫 Tôi là Giáo viên</button>
+  <!-- MÀN HÌNH CHỌN -->
+  <div id="man-chon">
+    <button class="btn-tim" onclick="moGiaoVien()">👨‍🏫 Quản lý & Tạo đề</button>
     <p style="text-align:center;margin:20px 0;color:#bbb">—————— hoặc ——————</p>
-    <button class="btn-xanh" onclick="moHocSinh()">🎓 Tôi là Học sinh</button>
+    <button class="btn-xanh" onclick="moHocSinh()">🎓 Học sinh làm bài</button>
   </div>
 
-  <!-- BƯỚC 2: GIAO DIỆN GIÁO VIÊN -->
-  <div id="giao-vien" class="an">
+  <!-- ========== GIAO DIỆN GIÁO VIÊN ========== -->
+  <div id="man-giaovien" class="an">
     <div class="tab">
-      <button id="tab-ds" class="dang" onclick="chuyenTab('ds')">📋 Danh sách đề</button>
-      <button id="tab-tao" class="bin" onclick="chuyenTab('tao')">✏️ Tạo đề mới</button>
+      <button id="tab-danhsach" class="dang" onclick="chuyenTab('danhsach')">📋 Danh sách đề</button>
+      <button id="tab-taode" class="bin" onclick="chuyenTab('taode')">✏️ Tạo đề</button>
+      <button id="tab-lophoc" class="bin" onclick="chuyenTab('lophoc')">🏫 Lớp & Điểm</button>
     </div>
 
     <!-- DANH SÁCH ĐỀ -->
-    <div id="gv-ds">
+    <div id="gv-danhsach">
       <h3>Danh sách đề đã tạo</h3>
-      <div id="danh-sach-de" style="margin-top:15px"></div>
+      <div id="danhsach-de"></div>
+      <button class="btn-xam" onclick="luuDuLieuXuongMay()" style="margin-top:15px">💾 Lưu dữ liệu ra file</button>
+      <button class="btn-xam" onclick="taiDuLieuTuFile()">📂 Tải dữ liệu từ file</button>
+      <input type="file" id="file-dulieu" accept=".json" style="display:none" onchange="xuLyTaiDuLieu(this)">
     </div>
 
     <!-- TẠO ĐỀ MỚI -->
-    <div id="gv-tao" class="an">
+    <div id="gv-taode" class="an">
       <h3>Tạo đề kiểm tra mới</h3>
-      <input type="text" id="ten-de-moi" placeholder="Tên đề: Kiểm tra Toán">
-      <input type="text" id="ma-de-moi" placeholder="Mã đề: DE001">
+      
+      <label>Tải đề từ file Word (.docx)</label>
+      <input type="file" id="file-word" accept=".docx" onchange="docFileWord(this)">
+      <div id="thongbao-file" class="thongbao an"></div>
+      
+      <hr style="margin:15px 0;border:0;border-top:1px solid #eee">
+      
+      <input type="text" id="ten-de" placeholder="Tên đề: Kiểm tra giữa kỳ Toán">
+      <input type="text" id="ma-de-tu" placeholder="Mã đề (để trống = tự tạo)">
+      <button class="btn-cam" onclick="taoMaDeTuDong()">🔄 Tạo mã đề ngắn tự động</button>
+      <p style="font-size:13px;color:#888;margin:5px 0">Mã đề ngắn dễ ghi nhớ: TOAN01, VAN02...</p>
       
       <div id="danh-cau-tao">
         <div class="cau">
@@ -75,98 +102,242 @@
       </div>
       
       <button class="btn-cam" onclick="themCau()">➕ Thêm câu hỏi</button>
-      <button class="btn-xanh" onclick="luuDe()">✅ Lưu đề & Tạo link</button>
-      <p id="link-de" style="margin-top:15px;padding:12px;background:#f0f4ff;border-radius:8px;word-break:break-all" class="an"></p>
+      <button class="btn-xanh" onclick="luuDe()">✅ Lưu đề & Tạo link + QR</button>
+      
+      <div id="ket-qua-taode" class="an">
+        <div class="thongbao thanhcong">✅ <strong>Đã lưu đề thành công!</strong></div>
+        <p><strong>Mã đề:</strong> <span id="ma-de-tao-ra"></span></p>
+        <p><strong>Link chia sẻ:</strong></p>
+        <div class="link-kq" id="link-chia-se"></div>
+        <button class="btn-tim" onclick="saoChepLink()">📋 Sao chép link</button>
+        <div id="qr-code"></div>
+        <button class="btn-cam" onclick="taiQR()" id="btn-tai-qr" style="display:none">💾 Tải mã QR</button>
+      </div>
     </div>
 
-    <button class="btn-xam" onclick="quayLai()">🔙 Quay lại</button>
+    <!-- QUẢN LÝ LỚP & ĐIỂM -->
+    <div id="gv-lophoc" class="an">
+      <h3>Danh sách lớp & Điểm</h3>
+      <input type="text" id="ten-lop" placeholder="Tên lớp: 5A">
+      <button class="btn-cam" onclick="themLop()">➕ Thêm lớp</button>
+      <div id="danhsach-lop" style="margin-top:15px"></div>
+      <hr style="margin:15px 0;border:0;border-top:1px solid #eee">
+      <label>Nhập danh sách học sinh (mỗi dòng 1 em: Họ tên, Điểm)</label>
+      <textarea id="danhsach-hs-nhap" rows="6" placeholder="Nguyễn Văn An&#10;Trần Thị Bình&#10;Lê Văn Cường"></textarea>
+      <button class="btn-xanh" onclick="xuatDiem()">📊 Xuất danh sách & Điểm ra file</button>
+    </div>
+
+    <button class="btn-xam" onclick="quayLai()" style="margin-top:20px">🔙 Quay lại</button>
   </div>
 
-  <!-- BƯỚC 3: GIAO DIỆN HỌC SINH -->
-  <div id="hoc-sinh" class="an">
-    <input type="text" id="ho-ten-hs" placeholder="Họ và tên của bạn">
+  <!-- ========== GIAO DIỆN HỌC SINH ========== -->
+  <div id="man-hocsinh" class="an">
+    <input type="text" id="ho-ten-hs" placeholder="Họ và tên đầy đủ">
     <input type="text" id="lop-hs" placeholder="Lớp">
-    <input type="text" id="ma-de-nhap" placeholder="Mã đề (VD: DEMO)" oninput="this.value=this.value.toUpperCase()">
+    <input type="text" id="ma-de-nhap" placeholder="Mã đề (VD: TOAN01)" oninput="this.value=this.value.toUpperCase()">
     <button class="btn-tim" onclick="batDauLamBai()">🚀 Bắt đầu làm bài</button>
-    <p id="thong-bao" style="margin-top:12px;text-align:center"></p>
+    <p id="thong-bao-hs" style="margin-top:12px;text-align:center"></p>
 
-    <!-- PHẦN LÀM BÀI -->
+    <!-- BÀI LÀM -->
     <div id="phan-lam-bai" class="an">
       <h3 id="ten-de-hs"></h3>
-      <p id="thong-tin-ca-nhan" style="color:#666;margin-bottom:20px"></p>
-      <div id="danh-sach-cau-hoi"></div>
+      <p id="tt-ca-nhan" style="color:#666;margin-bottom:15px"></p>
+      <div id="danh-cau-hoi"></div>
       <button class="btn-cam" onclick="nopBai()">📤 Nộp bài & Xem điểm</button>
     </div>
 
-    <!-- PHẦN KẾT QUẢ -->
+    <!-- KẾT QUẢ -->
     <div id="phan-ket-qua" class="an">
-      <div id="noi-dung-ket-qua"></div>
+      <div id="noi-dung-kq"></div>
       <button class="btn-tim" onclick="lamBaiKhac()">🔄 Làm bài khác</button>
     </div>
 
-    <button class="btn-xam" onclick="quayLai()">🔙 Quay lại</button>
+    <button class="btn-xam" onclick="quayLai()" style="margin-top:20px">🔙 Quay lại</button>
   </div>
 </div>
 
 <script>
-// ========== DANH SÁCH ĐỀ MẪU ==========
-let DANH_SACH_DE = {
-  "DEMO": {
-    ten: "Đề thử nghiệm",
-    cau: [
-      {q: "Câu 1: 15 + 9 bằng bao nhiêu?", a:["22","23","24","25"], d:3},
-      {q: "Câu 2: Thủ đô nước Việt Nam là đâu?", a:["TP.Hồ Chí Minh","Hà Nội","Đà Nẵng","Cần Thơ"], d:2}
-    ]
-  }
-};
-
+// ========== DỮ LIỆU — LƯU TRONG TRÌNH DUYỆT ==========
+let DANH_SACH_DE = {};
+let DANH_SACH_LOP = {};
+let DIEM_SINH_VIEN = {};
 let DE_DANG_CHON = null;
-let DAP_AN_HOC_SINH = {};
-let THONG_TIN = {ten:"", lop:""};
-let SO_CAU_DA_THEM = 1;
+let DAP_AN_HS = {};
+let TT_HS = {ten:"", lop:""};
+let SO_CAU = 1;
+
+// Tải dữ liệu đã lưu khi mở trang
+function taiDuLieuDaLuu(){
+  const dsDe = localStorage.getItem('danhsach_de');
+  const dsLop = localStorage.getItem('danhsach_lop');
+  const dsDiem = localStorage.getItem('danhsach_diem');
+  if(dsDe) DANH_SACH_DE = JSON.parse(dsDe);
+  if(dsLop) DANH_SACH_LOP = JSON.parse(dsLop);
+  if(dsDiem) DIEM_SINH_VIEN = JSON.parse(dsDiem);
+}
+function luuDuLieu(){
+  localStorage.setItem('danhsach_de', JSON.stringify(DANH_SACH_DE));
+  localStorage.setItem('danhsach_lop', JSON.stringify(DANH_SACH_LOP));
+  localStorage.setItem('danhsach_diem', JSON.stringify(DIEM_SINH_VIEN));
+}
 
 // ========== CHUYỂN MÀN HÌNH ==========
 function moGiaoVien(){
-  document.getElementById("buoc-chon").classList.add("an");
-  document.getElementById("giao-vien").classList.remove("an");
-  hienThiDanhSachDe();
+  taiDuLieuDaLuu();
+  document.getElementById("man-chon").classList.add("an");
+  document.getElementById("man-giaovien").classList.remove("an");
+  hienDanhSachDe();
 }
 function moHocSinh(){
-  document.getElementById("buoc-chon").classList.add("an");
-  document.getElementById("hoc-sinh").classList.remove("an");
+  taiDuLieuDaLuu();
+  document.getElementById("man-chon").classList.add("an");
+  document.getElementById("man-hocsinh").classList.remove("an");
 }
 function quayLai(){
   location.reload();
 }
 function chuyenTab(tab){
-  document.getElementById("gv-ds").classList.toggle("an", tab!=="ds");
-  document.getElementById("gv-tao").classList.toggle("an", tab!=="tao");
-  document.getElementById("tab-ds").classList.toggle("dang", tab==="ds");
-  document.getElementById("tab-ds").classList.toggle("bin", tab!=="ds");
-  document.getElementById("tab-tao").classList.toggle("dang", tab==="tao");
-  document.getElementById("tab-tao").classList.toggle("bin", tab!=="tao");
-  if(tab==="ds") hienThiDanhSachDe();
+  document.getElementById("gv-danhsach").classList.toggle("an", tab!=="danhsach");
+  document.getElementById("gv-taode").classList.toggle("an", tab!=="taode");
+  document.getElementById("gv-lophoc").classList.toggle("an", tab!=="lophoc");
+  document.getElementById("tab-danhsach").classList.toggle("dang", tab==="danhsach");
+  document.getElementById("tab-danhsach").classList.toggle("bin", tab!=="danhsach");
+  document.getElementById("tab-taode").classList.toggle("dang", tab==="taode");
+  document.getElementById("tab-taode").classList.toggle("bin", tab!=="taode");
+  document.getElementById("tab-lophoc").classList.toggle("dang", tab==="lophoc");
+  document.getElementById("tab-lophoc").classList.toggle("bin", tab!=="lophoc");
+  if(tab==="danhsach") hienDanhSachDe();
+  if(tab==="lophoc") hienDanhSachLop();
 }
 
-// ========== CHỨC NĂNG GIÁO VIÊN ==========
-function hienThiDanhSachDe(){
+// ========== CHỨC NĂNG TẠO MÃ ĐỀ TỰ ĐỘNG ==========
+function taoMaDeTuDong(){
+  const tenDe = document.getElementById("ten-de").value.trim();
+  if(!tenDe){
+    document.getElementById("ma-de-tu").value = "";
+    return;
+  }
+  // Tạo mã tắt từ tên đề
+  const maTat = tenDe
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // bỏ dấu
+    .match(/\b\w/g)?.join("").toUpperCase().slice(0,4) || "DE";
+  // Tìm số thứ tự tiếp theo
+  let so = 1;
+  while(DANH_SACH_DE[`${maTat}${so.toString().padStart(2,'0')}`]) so++;
+  document.getElementById("ma-de-tu").value = `${maTat}${so.toString().padStart(2,'0')}`;
+}
+
+// ========== ĐỌC FILE WORD ==========
+async function docFileWord(input){
+  const file = input.files[0];
+  if(!file) return;
+  const thongbao = document.getElementById("thongbao-file");
+  thongbao.classList.remove("an");
+  thongbao.className = "thongbao canhbao";
+  thongbao.innerHTML = "⏳ Đang đọc file...";
+  
+  try{
+    const result = await mammoth.convertToHtml({arrayBuffer: await file.arrayBuffer()});
+    const html = result.value;
+    const cau = tachCauHoiTuHTML(html);
+    
+    if(cau.length === 0){
+      thongbao.className = "thongbao loi";
+      thongbao.innerHTML = "❌ Không nhận diện được câu hỏi<br>Định dạng: Câu 1., A., B., C., D., Đáp án đúng:";
+      return;
+    }
+    
+    // Xóa form cũ → điền câu hỏi mới
+    document.getElementById("danh-cau-tao").innerHTML = "";
+    SO_CAU = cau.length;
+    cau.forEach((c, i) => {
+      themDongCauMoi(c, i+1);
+    });
+    
+    thongbao.className = "thongbao thanhcong";
+    thongbao.innerHTML = `✅ Nhận diện được ${cau.length} câu hỏi`;
+    
+  } catch(err){
+    thongbao.className = "thongbao loi";
+    thongbao.innerHTML = "❌ Lỗi đọc file: " + err.message;
+  }
+}
+
+function tachCauHoiTuHTML(html){
+  const cau = [];
+  const dong = html.replace(/<[^>]+>/g, '\n').split('\n').map(d=>d.trim()).filter(d=>d);
+  let i = 0;
+  while(i < dong.length){
+    const phuHop = dong[i].match(/^(Câu|câu)\s*\d+[.:]?\s*(.+)$/);
+    if(phuHop){
+      const ndCau = phuHop[2];
+      const dapAn = {a:"",b:"",c:"",d:""};
+      let dapAnDung = null;
+      i++;
+      while(i < dong.length && !dong[i].match(/^(Câu|câu)\s*\d+/) && !dong[i].match(/^(Đáp án|đáp án)/)){
+        const aMatch = dong[i].match(/^([A-D])[.)]\s*(.+)$/);
+        if(aMatch){
+          const chu = aMatch[1].toLowerCase();
+          dapAn[chu] = aMatch[2];
+        }
+        i++;
+      }
+      if(i < dong.length && dong[i].match(/^(Đáp án|đáp án)/)){
+        const dMatch = dong[i].match(/[A-D]/);
+        if(dMatch) dapAnDung = dMatch[0].charCodeAt(0) - 65 + 1;
+        i++;
+      }
+      if(ndCau && dapAn.a && dapAn.b && dapAn.c && dapAn.d && dapAnDung){
+        cau.push({q:ndCau, a:[dapAn.a, dapAn.b, dapAn.c, dapAn.d], d:dapAnDung});
+      }
+    } else { i++; }
+  }
+  return cau;
+}
+
+function themDongCauMoi(cauData, soThuTu){
+  const khung = document.getElementById("danh-cau-tao");
+  const dong = document.createElement("div");
+  dong.className = "cau";
+  dong.innerHTML = `
+    <strong>Câu ${soThuTu}</strong>
+    <input type="text" class="nd-cau" value="${cauData.q || ''}" placeholder="Nội dung câu hỏi">
+    <input type="text" class="dap-a" value="${cauData.a?.[0] || ''}" placeholder="Đáp án A">
+    <input type="text" class="dap-b" value="${cauData.a?.[1] || ''}" placeholder="Đáp án B">
+    <input type="text" class="dap-c" value="${cauData.a?.[2] || ''}" placeholder="Đáp án C">
+    <input type="text" class="dap-d" value="${cauData.a?.[3] || ''}" placeholder="Đáp án D">
+    <input type="number" class="dung-dung" value="${cauData.d || ''}" placeholder="Đáp án đúng: 1-4" min="1" max="4">
+  `;
+  khung.appendChild(dong);
+}
+
+// ========== QUẢN LÝ ĐỀ ==========
+function hienDanhSachDe(){
   let html = "";
   for(let ma in DANH_SACH_DE){
-    html += `<div style="padding:12px 0;border-bottom:1px solid #eee">
-      <strong>${ma}</strong> — ${DANH_SACH_DE[ma].ten}<br>
-      <small style="color:#666">${DANH_SACH_DE[ma].cau.length} câu | Link: ${location.origin}${location.pathname}?m=${ma}</small>
+    const d = DANH_SACH_DE[ma];
+    html += `<div class="danhsach-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <strong>${ma}</strong> — ${d.ten}<br>
+          <small style="color:#666">${d.cau.length} câu | Tạo: ${d.ngayTao || 'Không rõ'}</small>
+        </div>
+        <div class="hang-cot">
+          <button onclick="xoaDe('${ma}')" style="background:#ffe8e8;color:#e74c3c">Xóa</button>
+        </div>
+      </div>
     </div>`;
   }
-  document.getElementById("danh-sach-de").innerHTML = html || "<p style='color:#888;text-align:center'>Chưa có đề nào — Tạo đề mới nhé</p>";
+  document.getElementById("danhsach-de").innerHTML = html || "<p style='color:#888;text-align:center;padding:20px'>Chưa có đề nào<br>Tạo đề mới hoặc tải dữ liệu từ file</p>";
 }
 
 function themCau(){
-  SO_CAU_DA_THEM++;
+  SO_CAU++;
   const khung = document.getElementById("danh-cau-tao");
-  const dongMoi = document.createElement("div");
-  dongMoi.className = "cau";
-  dongMoi.innerHTML = `
-    <strong>Câu ${SO_CAU_DA_THEM}</strong>
+  const dong = document.createElement("div");
+  dong.className = "cau";
+  dong.innerHTML = `
+    <strong>Câu ${SO_CAU}</strong>
     <input type="text" class="nd-cau" placeholder="Nội dung câu hỏi">
     <input type="text" class="dap-a" placeholder="Đáp án A">
     <input type="text" class="dap-b" placeholder="Đáp án B">
@@ -174,46 +345,63 @@ function themCau(){
     <input type="text" class="dap-d" placeholder="Đáp án D">
     <input type="number" class="dung-dung" placeholder="Đáp án đúng: 1-4" min="1" max="4">
   `;
-  khung.appendChild(dongMoi);
+  khung.appendChild(dong);
 }
 
 function luuDe(){
-  const ma = document.getElementById("ma-de-moi").value.trim().toUpperCase();
-  const ten = document.getElementById("ten-de-moi").value.trim();
+  let ma = document.getElementById("ma-de-tu").value.trim().toUpperCase();
+  const ten = document.getElementById("ten-de").value.trim();
   
-  if(!ma || !ten) return alert("⚠️ Nhập mã đề và tên đề");
-  if(DANH_SACH_DE[ma]) return alert("❌ Mã đề đã tồn tại — chọn mã khác");
+  if(!ma) {
+    taoMaDeTuDong();
+    ma = document.getElementById("ma-de-tu").value.trim().toUpperCase();
+  }
+  if(!ma || !ten) return alert("⚠️ Nhập mã đề + tên đề");
+  if(DANH_SACH_DE[ma] && !confirm(`Mã ${ma} đã tồn tại — Ghi đè?`)) return;
   
   const dsCau = [];
-  document.querySelectorAll("#danh-cau-tao .cau").forEach(dong => {
-    const q = dong.querySelector(".nd-cau").value.trim();
-    const a = dong.querySelector(".dap-a").value.trim();
-    const b = dong.querySelector(".dap-b").value.trim();
-    const c = dong.querySelector(".dap-c").value.trim();
-    const d = dong.querySelector(".dap-d").value.trim();
-    const dung = parseInt(dong.querySelector(".dung-dung").value);
-    
-    if(q && a && b && c && d && !isNaN(dung)){
-      dsCau.push({q, a:[a,b,c,d], d:dung});
+  document.querySelectorAll("#danh-cau-tao .cau").forEach((d, idx)=>{
+    const q = d.querySelector(".nd-cau").value.trim();
+    const a = d.querySelector(".dap-a").value.trim();
+    const b = d.querySelector(".dap-b").value.trim();
+    const c = d.querySelector(".dap-c").value.trim();
+    const d_ = d.querySelector(".dap-d").value.trim();
+    const dung = parseInt(d.querySelector(".dung-dung").value);
+    if(q&&a&&b&&c&&d_&&!isNaN(dung)){
+      dsCau.push({q, a:[a,b,c,d_], d:dung});
     }
   });
   
-  if(dsCau.length === 0) return alert("⚠️ Điền đầy đủ thông tin ít nhất 1 câu hỏi");
+  if(dsCau.length === 0) return alert("⚠️ Chưa có câu hỏi hợp lệ");
   
-  DANH_SACH_DE[ma] = {ten, cau: dsCau};
-  const linkChiaSe = `${location.origin}${location.pathname}?m=${ma}`;
+  DANH_SACH_DE[ma] = {
+    ten,
+    cau: dsCau,
+    ngayTao: new Date().toLocaleDateString('vi-VN'),
+    soCau: dsCau.length
+  };
+  luuDuLieu();
   
-  document.getElementById("link-de").classList.remove("an");
-  document.getElementById("link-de").innerHTML = `
-    ✅ <strong>Đã lưu đề!</strong><br>
-    Mã: ${ma}<br>
-    Link: ${linkChiaSe}<br>
-    <button class="btn-tim" style="margin-top:8px" onclick="navigator.clipboard.writeText('${linkChiaSe}').then(()=>alert('✅ Đã sao chép!'))">📋 Sao chép link</button>
-  `;
+  // Hiện kết quả
+  document.getElementById("ket-qua-taode").classList.remove("an");
+  document.getElementById("ma-de-tao-ra").innerText = ma;
+  const link = `${location.origin}${location.pathname}?m=${ma}`;
+  document.getElementById("link-chia-se").innerText = link;
+  
+  // Tạo mã QR
+  const khungQR = document.getElementById("qr-code");
+  khungQR.innerHTML = "";
+  QRCode.toCanvas(document.createElement('canvas'), link, {width:180, margin:2}, function(err, canvas){
+    if(!err){
+      khungQR.appendChild(canvas);
+      document.getElementById("btn-tai-qr").style.display = "block";
+      document.getElementById("btn-tai-qr").dataset.ma = ma;
+    }
+  });
   
   // Reset form
-  document.getElementById("ma-de-moi").value = "";
-  document.getElementById("ten-de-moi").value = "";
+  document.getElementById("ma-de-tu").value = "";
+  document.getElementById("ten-de").value = "";
   document.getElementById("danh-cau-tao").innerHTML = `
     <div class="cau">
       <strong>Câu 1</strong>
@@ -225,91 +413,193 @@ function luuDe(){
       <input type="number" class="dung-dung" placeholder="Đáp án đúng: 1-4" min="1" max="4">
     </div>
   `;
-  SO_CAU_DA_THEM = 1;
+  SO_CAU = 1;
 }
 
-// ========== CHỨC NĂNG HỌC SINH ==========
+function saoChepLink(){
+  const link = document.getElementById("link-chia-se").innerText;
+  navigator.clipboard.writeText(link).then(()=>alert("✅ Đã sao chép link!"));
+}
+
+function taiQR(){
+  const canvas = document.querySelector("#qr-code canvas");
+  if(!canvas) return;
+  const link = document.createElement('a');
+  link.download = `QR_${document.getElementById("btn-tai-qr").dataset.ma || 'de'}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+function xoaDe(ma){
+  if(confirm(`Xóa đề ${ma}? Không hoàn tác được!`)){
+    delete DANH_SACH_DE[ma];
+    luuDuLieu();
+    hienDanhSachDe();
+  }
+}
+
+function luuDuLieuXuongMay(){
+  const data = {de:DANH_SACH_DE, lop:DANH_SACH_LOP, diem:DIEM_SINH_VIEN};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dulieu_${new Date().toLocaleDateString('vi-VN').replace(/\//g,'-')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function taiDuLieuTuFile(){
+  document.getElementById("file-dulieu").click();
+}
+
+function xuLyTaiDuLieu(input){
+  const file = input.files[0];
+  if(!file) return;
+  const doc = new FileReader();
+  doc.onload = e => {
+    try{
+      const data = JSON.parse(e.target.result);
+      if(data.de) DANH_SACH_DE = data.de;
+      if(data.lop) DANH_SACH_LOP = data.lop;
+      if(data.diem) DIEM_SINH_VIEN = data.diem;
+      luuDuLieu();
+      alert("✅ Tải dữ liệu thành công!");
+      hienDanhSachDe();
+    } catch{
+      alert("❌ File không đúng định dạng");
+    }
+  };
+  doc.readAsText(file);
+  input.value = "";
+}
+
+// ========== QUẢN LÝ LỚP & ĐIỂM ==========
+function hienDanhSachLop(){
+  let html = "";
+  for(let tenLop in DANH_SACH_LOP){
+    const soHS = DANH_SACH_LOP[tenLop].length;
+    html += `<div class="danhsach-item">
+      <strong>${tenLop}</strong> — ${soHS} học sinh
+      <div class="hang-cot">
+        <button onclick="xoaLop('${tenLop}')" style="background:#ffe8e8;color:#e74c3c">Xóa</button>
+      </div>
+    </div>`;
+  }
+  document.getElementById("danhsach-lop").innerHTML = html || "<p style='color:#888;text-align:center;padding:20px'>Chưa có lớp nào</p>";
+}
+
+function themLop(){
+  const ten = document.getElementById("ten-lop").value.trim();
+  if(!ten) return alert("Nhập tên lớp");
+  if(!DANH_SACH_LOP[ten]) DANH_SACH_LOP[ten] = [];
+  luuDuLieu();
+  hienDanhSachLop();
+  document.getElementById("ten-lop").value = "";
+}
+
+function xoaLop(ten){
+  if(confirm(`Xóa lớp ${ten}?`)){
+    delete DANH_SACH_LOP[ten];
+    luuDuLieu();
+    hienDanhSachLop();
+  }
+}
+
+function xuatDiem(){
+  const noiDung = document.getElementById("danhsach-hs-nhap").value.trim();
+  if(!noiDung) return alert("Nhập danh sách học sinh");
+  const dong = noiDung.split('\n').filter(d=>d.trim());
+  let csv = "Họ tên,Lớp,Điểm,Ghi chú\n";
+  dong.forEach(d => {
+    const phan = d.split(',').map(p=>p.trim());
+    csv += `${phan[0] || ""},${phan[1] || ""},${phan[2] || ""},${phan[3] || ""}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `DanhSach_Diem_${new Date().toLocaleDateString('vi-VN').replace(/\//g,'-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ========== HỌC SINH LÀM BÀI ==========
 function batDauLamBai(){
   const ten = document.getElementById("ho-ten-hs").value.trim();
   const lop = document.getElementById("lop-hs").value.trim();
   const ma = document.getElementById("ma-de-nhap").value.trim();
-  const tb = document.getElementById("thong-bao");
+  const tb = document.getElementById("thong-bao-hs");
   
-  if(!ten || !lop) return tb.innerHTML = "<span style='color:red'>⚠️ Nhập họ tên và lớp</span>";
+  if(!ten || !lop) return tb.innerHTML = "<span style='color:red'>⚠️ Nhập họ tên + lớp</span>";
   if(!ma) return tb.innerHTML = "<span style='color:red'>⚠️ Nhập mã đề</span>";
-  if(!DANH_SACH_DE[ma]) return tb.innerHTML = "<span style='color:red'>❌ Mã đề không tồn tại<br>💡 Thử gõ: DEMO</span>";
+  if(!DANH_SACH_DE[ma]) return tb.innerHTML = `<span style='color:red'>❌ Mã đề ${ma} không tồn tại</span>`;
   
-  THONG_TIN = {ten, lop};
+  TT_HS = {ten, lop};
   DE_DANG_CHON = DANH_SACH_DE[ma];
-  DAP_AN_HOC_SINH = {};
+  DAP_AN_HS = {};
   
   // Hiện bài làm
   document.getElementById("phan-lam-bai").classList.remove("an");
   document.getElementById("phan-ket-qua").classList.add("an");
   document.getElementById("ten-de-hs").innerText = DE_DANG_CHON.ten;
-  document.getElementById("thong-tin-ca-nhan").innerText = `${ten} — Lớp ${lop}`;
+  document.getElementById("tt-ca-nhan").innerText = `${ten} — Lớp ${lop}`;
   
   let html = "";
-  DE_DANG_CHON.cau.forEach((cau, viTri) => {
-    html += `<div class="cau"><p><b>Câu ${viTri+1}:</b> ${cau.q}</p>`;
-    cau.a.forEach((dapAn, stt) => {
-      let chuCai = String.fromCharCode(65 + stt);
-      html += `<label class="lua-chon" id="chon-${viTri+1}-${stt}" onclick="chonDapAn(${viTri+1},${stt})">${chuCai}. ${dapAn}</label>`;
+  DE_DANG_CHON.cau.forEach((c, i) => {
+    html += `<div class="cau"><p><b>Câu ${i+1}:</b> ${c.q}</p>`;
+    c.a.forEach((ans, j) => {
+      let ch = String.fromCharCode(65+j);
+      html += `<label class="lua-chon" id="chon-${i+1}-${j}" onclick="chonDapAn(${i+1},${j})">${ch}. ${ans}</label>`;
     });
     html += `</div>`;
   });
-  document.getElementById("danh-sach-cau-hoi").innerHTML = html;
-  tb.innerHTML = "<span style='color:green'>✅ Đã tìm thấy đề — Bắt đầu làm bài!</span>";
+  document.getElementById("danh-cau-hoi").innerHTML = html;
+  tb.innerHTML = `<span style='color:green'>✅ ${DE_DANG_CHON.ten} — ${DE_DANG_CHON.cau.length} câu</span>`;
 }
 
-function chonDapAn(soCau, viTriDapAn){
-  DAP_AN_HOC_SINH[soCau] = viTriDapAn;
-  // Xóa chọn cũ
-  for(let i = 0; i < 4; i++){
-    document.getElementById(`chon-${soCau}-${i}`)?.classList.remove("chon");
-  }
-  // Đánh dấu chọn mới
-  document.getElementById(`chon-${soCau}-${viTriDapAn}`).classList.add("chon");
+function chonDapAn(cau, vt){
+  DAP_AN_HS[cau] = vt;
+  for(let i=0;i<4;i++) document.getElementById(`chon-${cau}-${i}`)?.classList.remove("chon");
+  document.getElementById(`chon-${cau}-${vt}`).classList.add("chon");
 }
 
 function nopBai(){
   if(!DE_DANG_CHON) return;
-  
-  let dung = 0;
-  let tong = DE_DANG_CHON.cau.length;
-  let chiTiet = "";
-  
-  for(let i = 0; i < tong; i++){
-    let cau = DE_DANG_CHON.cau[i];
-    let cauSo = i + 1;
-    let traLoi = DAP_AN_HOC_SINH[cauSo];
-    let dungCau = traLoi === cau.d;
-    
-    if(dungCau) dung++;
-    let chon = traLoi !== undefined ? String.fromCharCode(65 + traLoi) : "Chưa chọn";
-    let dapAnDung = String.fromCharCode(65 + cau.d);
-    
-    chiTiet += `<p style="margin:6px 0">
-      Câu ${cauSo}: ${dungCau ? '✅ Đúng' : '❌ Sai'} — Bạn chọn ${chon} | Đáp án đúng: ${dapAnDung}
-    </p>`;
+  let d=0, t=DE_DANG_CHON.cau.length, ct="";
+  for(let i=0;i<t;i++){
+    let c = DE_DANG_CHON.cau[i], traloi = DAP_AN_HS[i+1];
+    let dung = traloi === c.d;
+    if(dung) d++;
+    let chon = traloi!==undefined ? String.fromCharCode(65+traloi) : "Chưa chọn";
+    let dungsai = String.fromCharCode(65+c.d);
+    ct += `<p style="margin:4px 0">Câu ${i+1}: ${dung?"✅ Đúng":"❌ Sai"} — Bạn ${chon} | Đáp án ${dungsai}</p>`;
   }
+  let diem = Math.round((d/t)*10*10)/10;
+  let xep = diem>=8?"Xuất sắc":diem>=6.5?"Khá":diem>=5?"Trung bình":"Chưa đạt";
+  let mau = diem>=5?"dung":"sai";
   
-  let diem = Math.round((dung / tong) * 10 * 10) / 10;
-  let xepLoai = diem >= 8 ? "Xuất sắc" : diem >= 6.5 ? "Khá" : diem >= 5 ? "Trung bình" : "Chưa đạt";
-  let mauNen = diem >= 5 ? "dung" : "sai";
+  // Lưu điểm
+  const maDe = document.getElementById("ma-de-nhap").value.trim();
+  if(!DIEM_SINH_VIEN[maDe]) DIEM_SINH_VIEN[maDe] = [];
+  DIEM_SINH_VIEN[maDe].push({
+    ten: TT_HS.ten, lop: TT_HS.lop, diem, dung, tong: t,
+    ngay: new Date().toLocaleString('vi-VN')
+  });
+  luuDuLieu();
   
   // Hiện kết quả
   document.getElementById("phan-lam-bai").classList.add("an");
   document.getElementById("phan-ket-qua").classList.remove("an");
-  document.getElementById("noi-dung-ket-qua").innerHTML = `
-    <div class="kq ${mauNen}">
-      <h3>🎉 Kết quả bài làm</h3>
-      <p style="margin:8px 0"><strong>${THONG_TIN.ten}</strong> — Lớp ${THONG_TIN.lop}</p>
+  document.getElementById("noi-dung-kq").innerHTML = `
+    <div class="kq ${mau}">
+      <h3>🎉 Kết quả</h3>
+      <p><strong>${TT_HS.ten}</strong> — ${TT_HS.lop}</p>
       <p style="font-size:40px;font-weight:bold;margin:15px 0">${diem}/10</p>
-      <p style="font-size:20px">${xepLoai}</p>
-      <p>Đúng ${dung}/${tong} câu</p>
+      <p style="font-size:20px">${xep}</p>
+      <p>Đúng ${d}/${t} câu</p>
       <hr style="margin:20px 0;border:0;border-top:1px solid #ddd">
-      ${chiTiet}
+      ${ct}
     </div>
   `;
 }
@@ -317,15 +607,15 @@ function nopBai(){
 function lamBaiKhac(){
   document.getElementById("phan-ket-qua").classList.add("an");
   document.getElementById("ma-de-nhap").value = "";
-  document.getElementById("thong-bao").innerHTML = "";
-  DE_DANG_CHON = null;
-  DAP_AN_HOC_SINH = {};
+  document.getElementById("thong-bao-hs").innerHTML = "";
+  DE_DANG_CHON = null; DAP_AN_HS = {};
 }
 
-// Tự động điền mã đề từ link ?m=DEMO
-window.onload = function(){
-  let maTuLink = new URLSearchParams(location.search).get("m");
-  if(maTuLink) document.getElementById("ma-de-nhap").value = maTuLink.toUpperCase();
+// Tự điền mã từ link
+window.onload = ()=>{
+  taiDuLieuDaLuu();
+  let m = new URLSearchParams(location.search).get("m");
+  if(m) document.getElementById("ma-de-nhap").value = m.toUpperCase();
 };
 </script>
 </body>
