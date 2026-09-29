@@ -5,32 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thầy Nhiên Nguyễn Huệ</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
     body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
-    .card{background:#fff;border-radius:24px;padding:30px;max-width:520px;margin:20px auto;box-shadow:0 15px 45px rgba(0,0,0,.15)}
-    h1{text-align:center;color:#667eea;font-size:24px;margin-bottom:5px}
+    .card{background:#fff;border-radius:24px;padding:30px;max-width:500px;margin:20px auto}
+    h1{text-align:center;color:#667eea;margin-bottom:5px}
     .slogan{text-align:center;color:#888;font-style:italic;margin-bottom:20px}
     .an{display:none!important}
-    input,textarea{width:100%;padding:12px;border:2px solid #eee;border-radius:10px;font-size:15px;margin:6px 0 12px}
-    button{width:100%;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;margin:6px 0}
-    button:hover{opacity:.92}
+    input{width:100%;padding:12px;border:2px solid #eee;border-radius:10px;font-size:16px;margin:8px 0}
+    button{width:100%;padding:14px;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;margin:6px 0}
     .btn-tim{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
     .btn-xanh{background:#27ae60;color:#fff}
     .btn-cam{background:#f5a623;color:#fff}
     .btn-do{background:#e74c3c;color:#fff}
-    .khung{background:#f9f9f9;padding:15px;border-radius:12px;margin:12px 0}
-    .de-item{padding:10px;border-bottom:1px solid #eee;cursor:pointer}
-    .de-item:hover{background:#f0f4ff}
-    .cau{padding:12px;background:#f9f9f9;border-radius:10px;margin:10px 0}
-    .lua-chon{display:block;padding:8px;margin:5px 0;border:2px solid #ddd;border-radius:8px;cursor:pointer}
-    .lua-chon.chon{border-color:#667eea;background:#eef2ff}
-    .kq{margin-top:15px;padding:20px;border-radius:12px;text-align:center}
-    .dung{background:#e8f8e8;color:#27ae60}
-    .sai{background:#ffe8e8;color:#e74c3c}
-    .tab{display:flex;gap:10px;margin-bottom:15px}
+    .tab{display:flex;gap:8px;margin-bottom:15px}
     .tab button{flex:1;background:#eee;color:#333}
     .tab button.active{background:#667eea;color:#fff}
-    .link-ma{background:#f0f4ff;padding:10px;border-radius:8px;font-family:monospace;word-break:break-all;margin:8px 0}
+    .cau{padding:15px;background:#f9f9f9;border-radius:10px;margin:10px 0}
+    .lua-chon{display:block;padding:10px;margin:6px 0;border:2px solid #ddd;border-radius:8px;cursor:pointer}
+    .lua-chon.chon{border-color:#667eea;background:#eef2ff}
+    .kq{margin-top:20px;padding:20px;border-radius:12px;text-align:center}
+    .dung{background:#e8f8e8;color:#27ae60}
+    .sai{background:#ffe8e8;color:#e74c3c}
+    .de-item{padding:10px 0;border-bottom:1px solid #eee}
   </style>
 </head>
 <body>
@@ -38,75 +34,66 @@
   <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
   <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
 
-  <!-- CHỌN VAI TRÒ -->
+  <!-- MÀN HÌNH CHỌN -->
   <div id="man-chon">
-    <button class="btn-tim" onclick="moGiaoVien()">👨‍🏫 Giáo viên — Quản lý & Tạo đề</button>
+    <button class="btn-tim" onclick="moGiaoVien()">👨‍🏫 Tôi là Giáo viên</button>
     <p style="text-align:center;margin:15px 0;color:#bbb">——— Hoặc ———</p>
-    <button class="btn-xanh" onclick="moHocSinh()">🎓 Học sinh — Làm bài</button>
+    <button class="btn-xanh" onclick="moHocSinh()">🎓 Tôi là Học sinh</button>
   </div>
 
-  <!-- ========== GIAO DIỆN GIÁO VIÊN ========== -->
-  <div id="man-giaovien" class="an">
+  <!-- GIÁO VIÊN -->
+  <div id="man-gv" class="an">
     <div class="tab">
-      <button id="tab-danhsach" class="active" onclick="tabGiaoVien('danhsach')">📋 Danh sách đề</button>
-      <button id="tab-taode" onclick="tabGiaoVien('taode')">✏️ Tạo đề mới</button>
+      <button id="tab-ds" class="active" onclick="tab('ds')">📋 Danh sách đề</button>
+      <button id="tab-tao" onclick="tab('tao')">✏️ Tạo đề</button>
     </div>
 
-    <!-- DANH SÁCH ĐỀ -->
-    <div id="giaovien-danhsach">
-      <h3>Danh sách đề đã tạo</h3>
-      <div id="danhsach-de"></div>
+    <div id="gv-ds">
+      <h3>Danh sách đề</h3>
+      <div id="danhsach"></div>
     </div>
 
-    <!-- TẠO ĐỀ MỚI -->
-    <div id="giaovien-taode" class="an">
-      <h3>Tạo đề kiểm tra mới</h3>
-      <input type="text" id="ten-de-moi" placeholder="Tên đề: Kiểm tra giữa kỳ Toán">
-      <input type="text" id="ma-de-moi" placeholder="Mã đề: TOAN01 (tự tạo)">
-      
-      <div id="danhsach-cau-moi">
+    <div id="gv-tao" class="an">
+      <h3>Tạo đề mới</h3>
+      <input type="text" id="ten-de" placeholder="Tên đề">
+      <input type="text" id="ma-de" placeholder="Mã đề (VD: DE002)">
+      <div id="cau-tao">
         <div class="cau">
           <strong>Câu 1</strong>
-          <input type="text" class="nd-cau" placeholder="Nội dung câu hỏi">
-          <input type="text" class="nd-a" placeholder="Đáp án A">
-          <input type="text" class="nd-b" placeholder="Đáp án B">
-          <input type="text" class="nd-c" placeholder="Đáp án C">
-          <input type="text" class="nd-d" placeholder="Đáp án D">
-          <input type="number" class="dung-dung" placeholder="Đáp án đúng: 1=A, 2=B, 3=C, 4=D" min="1" max="4">
+          <input type="text" class="nd" placeholder="Nội dung câu hỏi">
+          <input type="text" class="a" placeholder="Đáp án A">
+          <input type="text" class="b" placeholder="Đáp án B">
+          <input type="text" class="c" placeholder="Đáp án C">
+          <input type="text" class="d" placeholder="Đáp án D">
+          <input type="number" class="dung" placeholder="Đáp án đúng: 1=A, 2=B, 3=C, 4=D" min="1" max="4">
         </div>
       </div>
-      <button class="btn-cam" onclick="themDongCau()">➕ Thêm câu hỏi</button>
-      <button class="btn-xanh" onclick="luuDeMoi()">✅ Lưu đề & Tạo link</button>
-      <div id="link-de" class="an khung">
-        <p><strong>Chia sẻ cho học sinh:</strong></p>
-        <div class="link-ma" id="link-chia-se"></div>
-        <button class="btn-tim" onclick="copyLink()">📋 Sao chép link</button>
-      </div>
+      <button class="btn-cam" onclick="themCau()">➕ Thêm câu</button>
+      <button class="btn-xanh" onclick="luuDe()">✅ Lưu & Tạo link</button>
+      <p id="link-kq" style="margin-top:12px;word-break:break-all"></p>
     </div>
 
     <button class="btn-do" onclick="veDau()" style="margin-top:20px">🔙 Quay lại</button>
   </div>
 
-  <!-- ========== GIAO DIỆN HỌC SINH ========== -->
-  <div id="man-hocsinh" class="an">
-    <input type="text" id="ho-ten" placeholder="Họ và tên">
+  <!-- HỌC SINH -->
+  <div id="man-hs" class="an">
+    <input type="text" id="ten-hs" placeholder="Họ và tên">
     <input type="text" id="lop-hs" placeholder="Lớp">
-    <input type="text" id="ma-de-nhap" placeholder="Mã đề" oninput="this.value=this.value.toUpperCase()">
-    <button class="btn-tim" onclick="kiemTraDe()">🔍 Bắt đầu làm bài</button>
-    <p id="thong-bao-hs" style="margin-top:10px;text-align:center"></p>
+    <input type="text" id="ma-nhap" placeholder="Mã đề" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn-tim" onclick="batDau()">🔍 Bắt đầu làm bài</button>
+    <p id="tb" style="margin-top:10px;text-align:center"></p>
 
-    <!-- BÀI LÀM -->
-    <div id="phan-bai-lam" class="an">
+    <div id="bai-lam" class="an">
       <h3 id="ten-de-hs"></h3>
-      <p id="thong-tin-hs" style="color:#666;margin-bottom:15px"></p>
-      <div id="cac-cau-hoi"></div>
+      <p id="tt-hs" style="color:#666;margin-bottom:15px"></p>
+      <div id="danh-cau"></div>
       <button class="btn-cam" onclick="nopBai()">📤 Nộp bài & Xem điểm</button>
     </div>
 
-    <!-- KẾT QUẢ -->
-    <div id="phan-ket-qua" class="an">
+    <div id="ket-qua" class="an">
       <div id="noi-dung-kq"></div>
-      <button class="btn-tim" onclick="lamLai()">🔄 Làm bài khác</button>
+      <button class="btn-tim" onclick="lamLai()">🔄 Làm lại</button>
     </div>
 
     <button class="btn-do" onclick="veDau()" style="margin-top:20px">🔙 Quay lại</button>
@@ -114,8 +101,8 @@
 </div>
 
 <script>
-// ========== DỮ LIỆU — THÊM ĐỀ Ở ĐÂY HOẶC TẠO TỪ GIAO DIỆN ==========
-let DANH_SACH_DE = {
+// DỮ LIỆU
+let DE = {
   "DEMO": {
     ten: "Đề thử nghiệm",
     cau: [
@@ -125,180 +112,127 @@ let DANH_SACH_DE = {
   }
 };
 
-let deDangChon = null;
-let dapAnHS = {};
-let thongTinHS = {ten:"", lop:""};
-let soCauThem = 1;
+let deChon = null;
+let dapAn = {};
+let ttHS = {ten:"", lop:""};
+let soCau = 1;
 
-// ========== CHUYỂN MÀN HÌNH ==========
+// CHUYỂN MÀN HÌNH
 function moGiaoVien(){
   document.getElementById("man-chon").classList.add("an");
-  document.getElementById("man-giaovien").classList.remove("an");
-  hienDanhSachDe();
+  document.getElementById("man-gv").classList.remove("an");
+  hienDS();
 }
 function moHocSinh(){
   document.getElementById("man-chon").classList.add("an");
-  document.getElementById("man-hocsinh").classList.remove("an");
+  document.getElementById("man-hs").classList.remove("an");
 }
 function veDau(){
-  document.getElementById("man-chon").classList.remove("an");
-  document.getElementById("man-giaovien").classList.add("an");
-  document.getElementById("man-hocsinh").classList.add("an");
-  // Reset
-  deDangChon = null; dapAnHS = {};
-  document.getElementById("phan-bai-lam").classList.add("an");
-  document.getElementById("phan-ket-qua").classList.add("an");
-  document.getElementById("ho-ten").value = "";
-  document.getElementById("lop-hs").value = "";
-  document.getElementById("ma-de-nhap").value = "";
+  location.reload();
+}
+function tab(t){
+  document.getElementById("gv-ds").classList.toggle("an",t!=="ds");
+  document.getElementById("gv-tao").classList.toggle("an",t!=="tao");
+  document.getElementById("tab-ds").classList.toggle("active",t==="ds");
+  document.getElementById("tab-tao").classList.toggle("active",t==="tao");
+  if(t==="ds") hienDS();
 }
 
-// ========== GIÁO VIÊN ==========
-function tabGiaoVien(tab){
-  document.getElementById("giaovien-danhsach").classList.toggle("an", tab!=="danhsach");
-  document.getElementById("giaovien-taode").classList.toggle("an", tab!=="taode");
-  document.getElementById("tab-danhsach").classList.toggle("active", tab==="danhsach");
-  document.getElementById("tab-taode").classList.toggle("active", tab==="taode");
-  if(tab==="danhsach") hienDanhSachDe();
-}
-
-function hienDanhSachDe(){
+// GIÁO VIÊN
+function hienDS(){
   let html = "";
-  for(let ma in DANH_SACH_DE){
-    html += `<div class="de-item">
-      <strong>${ma}</strong> — ${DANH_SACH_DE[ma].ten} (${DANH_SACH_DE[ma].cau.length} câu)
-      <br><small>Link: ${location.origin}${location.pathname}?m=${ma}</small>
-    </div>`;
+  for(let m in DE){
+    html += `<div class="de-item"><strong>${m}</strong> — ${DE[m].ten} (${DE[m].cau.length} câu)<br>Link: ${location.origin}${location.pathname}?m=${m}</div>`;
   }
-  document.getElementById("danhsach-de").innerHTML = html || "<p style='color:#888'>Chưa có đề nào — Tạo đề mới nhé</p>";
+  document.getElementById("danhsach").innerHTML = html || "<p style='color:#888'>Chưa có đề</p>";
 }
-
-function themDongCau(){
-  soCauThem++;
-  const khung = document.getElementById("danhsach-cau-moi");
-  const dong = document.createElement("div");
-  dong.className = "cau";
-  dong.innerHTML = `
-    <strong>Câu ${soCauThem}</strong>
-    <input type="text" class="nd-cau" placeholder="Nội dung câu hỏi">
-    <input type="text" class="nd-a" placeholder="Đáp án A">
-    <input type="text" class="nd-b" placeholder="Đáp án B">
-    <input type="text" class="nd-c" placeholder="Đáp án C">
-    <input type="text" class="nd-d" placeholder="Đáp án D">
-    <input type="number" class="dung-dung" placeholder="Đáp án đúng: 1-4" min="1" max="4">
-  `;
-  khung.appendChild(dong);
+function themCau(){
+  soCau++;
+  const k = document.getElementById("cau-tao");
+  k.innerHTML += `<div class="cau"><strong>Câu ${soCau}</strong><input type="text" class="nd" placeholder="Nội dung"><input type="text" class="a" placeholder="A"><input type="text" class="b" placeholder="B"><input type="text" class="c" placeholder="C"><input type="text" class="d" placeholder="D"><input type="number" class="dung" placeholder="Đáp án đúng 1-4" min="1" max="4"></div>`;
 }
-
-function luuDeMoi(){
-  const ma = document.getElementById("ma-de-moi").value.trim().toUpperCase();
-  const ten = document.getElementById("ten-de-moi").value.trim();
-  if(!ma || !ten) return alert("Nhập mã đề + tên đề");
-  if(DANH_SACH_DE[ma]) return alert("Mã đề đã tồn tại — đổi mã khác");
-
-  const dongCau = document.querySelectorAll("#danhsach-cau-moi .cau");
+function luuDe(){
+  const ma = document.getElementById("ma-de").value.trim().toUpperCase();
+  const ten = document.getElementById("ten-de").value.trim();
+  if(!ma || !ten) return alert("Nhập mã + tên đề");
+  if(DE[ma]) return alert("Mã đã tồn tại");
+  
   const dsCau = [];
-  for(let d of dongCau){
-    const q = d.querySelector(".nd-cau").value.trim();
-    const a = d.querySelector(".nd-a").value.trim();
-    const b = d.querySelector(".nd-b").value.trim();
-    const c = d.querySelector(".nd-c").value.trim();
-    const d_ = d.querySelector(".nd-d").value.trim();
-    const dung = parseInt(d.querySelector(".dung-dung").value);
-    if(!q || !a || !b || !c || !d_ || isNaN(dung)) return alert("Điền đầy đủ thông tin từng câu");
-    dsCau.push({q, a:[a,b,c,d_], d});
-  }
-
-  DANH_SACH_DE[ma] = {ten, cau: dsCau};
+  document.querySelectorAll("#cau-tao .cau").forEach(d=>{
+    const q = d.querySelector(".nd").value.trim();
+    const a = d.querySelector(".a").value.trim();
+    const b = d.querySelector(".b").value.trim();
+    const c = d.querySelector(".c").value.trim();
+    const d_ = d.querySelector(".d").value.trim();
+    const dung = parseInt(d.querySelector(".dung").value);
+    if(q&&a&&b&&c&&d_&&dung) dsCau.push({q,a:[a,b,c,d_],d:dung});
+  });
+  if(!dsCau.length) return alert("Điền đủ thông tin câu hỏi");
+  
+  DE[ma] = {ten,cau:dsCau};
   const link = `${location.origin}${location.pathname}?m=${ma}`;
-  
-  document.getElementById("link-de").classList.remove("an");
-  document.getElementById("link-chia-se").innerText = link;
-  alert(`✅ Đã lưu!\nMã: ${ma}\nLink: ${link}`);
-  
-  // Reset form
-  document.getElementById("ma-de-moi").value = "";
-  document.getElementById("ten-de-moi").value = "";
-  document.getElementById("danhsach-cau-moi").innerHTML = `
-    <div class="cau">
-      <strong>Câu 1</strong>
-      <input type="text" class="nd-cau" placeholder="Nội dung câu hỏi">
-      <input type="text" class="nd-a" placeholder="Đáp án A">
-      <input type="text" class="nd-b" placeholder="Đáp án B">
-      <input type="text" class="nd-c" placeholder="Đáp án C">
-      <input type="text" class="nd-d" placeholder="Đáp án D">
-      <input type="number" class="dung-dung" placeholder="Đáp án đúng: 1-4" min="1" max="4">
-    </div>
-  `;
-  soCauThem = 1;
+  document.getElementById("link-kq").innerHTML = `✅ Đã lưu!<br><strong>Link:</strong> ${link}`;
+  alert("✅ Lưu thành công!");
 }
 
-function copyLink(){
-  const link = document.getElementById("link-chia-se").innerText;
-  navigator.clipboard.writeText(link).then(()=>alert("✅ Đã sao chép!"));
-}
-
-// ========== HỌC SINH ==========
-function kiemTraDe(){
-  const ten = document.getElementById("ho-ten").value.trim();
+// HỌC SINH
+function batDau(){
+  const ten = document.getElementById("ten-hs").value.trim();
   const lop = document.getElementById("lop-hs").value.trim();
-  const ma = document.getElementById("ma-de-nhap").value.trim();
-  const tb = document.getElementById("thong-bao-hs");
-
-  if(!ten || !lop) return tb.innerHTML = "<span style='color:red'>⚠️ Nhập họ tên + lớp</span>";
+  const ma = document.getElementById("ma-nhap").value.trim();
+  const tb = document.getElementById("tb");
+  
+  if(!ten||!lop) return tb.innerHTML = "<span style='color:red'>⚠️ Nhập họ tên + lớp</span>";
   if(!ma) return tb.innerHTML = "<span style='color:red'>⚠️ Nhập mã đề</span>";
-  if(!DANH_SACH_DE[ma]) return tb.innerHTML = "<span style='color:red'>❌ Mã đề không tồn tại</span>";
-
-  thongTinHS = {ten, lop};
-  deDangChon = DANH_SACH_DE[ma];
-  dapAnHS = {};
-
-  // Vào bài làm
-  document.getElementById("phan-bai-lam").classList.remove("an");
-  document.getElementById("phan-ket-qua").classList.add("an");
-  document.getElementById("ten-de-hs").innerText = deDangChon.ten;
-  document.getElementById("thong-tin-hs").innerText = `${ten} — Lớp ${lop}`;
+  if(!DE[ma]) return tb.innerHTML = "<span style='color:red'>❌ Mã đề không tồn tại<br>💡 Thử: DEMO</span>";
+  
+  ttHS = {ten,lop};
+  deChon = DE[ma];
+  dapAn = {};
+  
+  document.getElementById("bai-lam").classList.remove("an");
+  document.getElementById("ket-qua").classList.add("an");
+  document.getElementById("ten-de-hs").innerText = deChon.ten;
+  document.getElementById("tt-hs").innerText = `${ten} — Lớp ${lop}`;
   
   let html = "";
-  deDangChon.cau.forEach((cau, i)=>{
-    html += `<div class="cau"><p><b>Câu ${i+1}:</b> ${cau.q}</p>`;
-    cau.a.forEach((ans, j)=>{
-      let c = String.fromCharCode(65+j);
-      html += `<label class="lua-chon" id="chon-${i+1}-${j}" onclick="chonDapAn(${i+1},${j})">${c}. ${ans}</label>`;
+  deChon.cau.forEach((c,i)=>{
+    html += `<div class="cau"><p><b>Câu ${i+1}:</b> ${c.q}</p>`;
+    c.a.forEach((ans,j)=>{
+      let ch = String.fromCharCode(65+j);
+      html += `<label class="lua-chon" id="chon-${i+1}-${j}" onclick="chon(${i+1},${j})">${ch}. ${ans}</label>`;
     });
     html += `</div>`;
   });
-  document.getElementById("cac-cau-hoi").innerHTML = html;
-  tb.innerHTML = `<span style='color:green'>✅ Đã tìm thấy — bắt đầu làm</span>`;
+  document.getElementById("danh-cau").innerHTML = html;
+  tb.innerHTML = "<span style='color:green'>✅ Sẵn sàng làm bài</span>";
 }
-
-function chonDapAn(cau, vt){
-  dapAnHS[cau] = vt;
+function chon(cau,vt){
+  dapAn[cau] = vt;
   for(let i=0;i<4;i++) document.getElementById(`chon-${cau}-${i}`)?.classList.remove("chon");
   document.getElementById(`chon-${cau}-${vt}`).classList.add("chon");
 }
-
 function nopBai(){
-  if(!deDangChon) return;
-  let d=0, t=deDangChon.cau.length, ct="";
+  if(!deChon) return;
+  let d=0, t=deChon.cau.length, ct="";
   for(let i=0;i<t;i++){
-    let cau = deDangChon.cau[i], traloi = dapAnHS[i+1];
-    let dung = traloi === cau.d;
+    let c = deChon.cau[i], traloi = dapAn[i+1];
+    let dung = traloi === c.d;
     if(dung) d++;
     let chon = traloi!==undefined ? String.fromCharCode(65+traloi) : "Chưa chọn";
-    let dungsai = String.fromCharCode(65+cau.d);
+    let dungsai = String.fromCharCode(65+c.d);
     ct += `<p style="margin:4px 0">Câu ${i+1}: ${dung?"✅ Đúng":"❌ Sai"} — Bạn ${chon} | Đáp án ${dungsai}</p>`;
   }
   let diem = Math.round((d/t)*10*10)/10;
   let xep = diem>=8?"Xuất sắc":diem>=6.5?"Khá":diem>=5?"Trung bình":"Chưa đạt";
   let mau = diem>=5?"dung":"sai";
-
-  document.getElementById("phan-bai-lam").classList.add("an");
-  document.getElementById("phan-ket-qua").classList.remove("an");
+  
+  document.getElementById("bai-lam").classList.add("an");
+  document.getElementById("ket-qua").classList.remove("an");
   document.getElementById("noi-dung-kq").innerHTML = `
     <div class="kq ${mau}">
       <h3>🎉 Kết quả</h3>
-      <p><strong>${thongTinHS.ten}</strong> — ${thongTinHS.lop}</p>
+      <p><strong>${ttHS.ten}</strong> — ${ttHS.lop}</p>
       <p style="font-size:36px;font-weight:bold;margin:10px 0">${diem}/10</p>
       <p style="font-size:18px">${xep}</p>
       <p>Đúng ${d}/${t} câu</p>
@@ -307,18 +241,17 @@ function nopBai(){
     </div>
   `;
 }
-
 function lamLai(){
-  document.getElementById("phan-ket-qua").classList.add("an");
-  document.getElementById("ma-de-nhap").value = "";
-  document.getElementById("thong-bao-hs").innerHTML = "";
-  deDangChon = null; dapAnHS = {};
+  document.getElementById("ket-qua").classList.add("an");
+  document.getElementById("ma-nhap").value = "";
+  document.getElementById("tb").innerHTML = "";
+  deChon = null; dapAn = {};
 }
 
 // Tự điền mã từ link
 window.onload = ()=>{
   let m = new URLSearchParams(location.search).get("m");
-  if(m) document.getElementById("ma-de-nhap").value = m.toUpperCase();
+  if(m) document.getElementById("ma-nhap").value = m.toUpperCase();
 };
 </script>
 </body>
