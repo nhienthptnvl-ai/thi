@@ -3,220 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thầy Nhiên Nguyễn Huệ — Làm bài</title>
+  <title>Thầy Nhiên Nguyễn Huệ</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-    .card { background: white; border-radius: 24px; padding: 35px; max-width: 520px; margin: 40px auto; box-shadow: 0 15px 45px rgba(0,0,0,0.15); }
-    h1 { text-align: center; color: #667eea; font-size: 24px; margin-bottom: 8px; }
-    .slogan { text-align: center; color: #888; font-style: italic; margin-bottom: 25px; }
-    .trangthai { padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; font-weight: 500; }
-    .tot { background: #e8f8e8; color: #27ae60; border-left: 4px solid #27ae60; }
-    .sai { background: #ffe8e8; color: #e74c3c; border-left: 4px solid #e74c3c; }
-    input { width: 100%; padding: 14px; border: 2px solid #e8e8e8; border-radius: 12px; font-size: 16px; margin: 8px 0 16px; }
-    button { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    button:hover { opacity: 0.92; }
-    .btn-chinh { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-top: 8px; }
-    .btn-xanh { background: #27ae60; color: white; margin-top: 10px; }
-    .btn-nop { background: #f5a623; color: white; margin-top: 20px; }
-    .an { display: none !important; }
-    .phancach { text-align: center; color: #bbb; margin: 24px 0; }
-    .cau-hoi { margin: 20px 0; padding: 18px; background: #f9f9f9; border-radius: 14px; }
-    .cau-hoi p { font-weight: 600; margin-bottom: 12px; font-size: 15px; }
-    .lua-chon { display: block; padding: 10px; margin: 6px 0; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-    .lua-chon:hover { border-color: #667eea; background: #f0f4ff; }
-    .lua-chon.chon { border-color: #667eea; background: #e6ecff; }
-    .ket-qua { margin-top: 20px; padding: 20px; border-radius: 14px; text-align: center; }
-    .dung { background: #e8f8e8; color: #27ae60; }
-    .sai-kq { background: #ffe8e8; color: #e74c3c; }
-    .thong-tin { margin-bottom: 16px; }
-    .thong-tin input { margin: 0 6px; width: 48%; }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+    body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+    .card{background:#fff;border-radius:24px;padding:30px;max-width:500px;margin:30px auto;box-shadow:0 15px 45px rgba(0,0,0,.15)}
+    h1{text-align:center;color:#667eea;font-size:24px;margin-bottom:8px}
+    .slogan{text-align:center;color:#888;font-style:italic;margin-bottom:20px}
+    .an{display:none!important}
+    input{width:100%;padding:13px;border:2px solid #eee;border-radius:12px;font-size:16px;margin:8px 0}
+    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer}
+    .btn-xanh{background:#27ae60;color:#fff;margin-top:10px}
+    .btn-tim{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;margin-top:8px}
+    .btn-cam{background:#f5a623;color:#fff;margin-top:20px}
+    .cau{padding:15px;background:#f9f9f9;border-radius:12px;margin:15px 0}
+    .lua-chon{display:block;padding:10px;margin:6px 0;border:2px solid #ddd;border-radius:8px;cursor:pointer}
+    .lua-chon.chon{border-color:#667eea;background:#eef2ff}
+    .kq{margin-top:20px;padding:20px;border-radius:12px;text-align:center}
+    .dung{background:#e8f8e8;color:#27ae60}
+    .sai{background:#ffe8e8;color:#e74c3c}
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
-    <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
+<div class="card">
+  <h1>📚 Thầy Nhiên Nguyễn Huệ</h1>
+  <p class="slogan">"Nỗ lực hôm nay — Thành công ngày mai"</p>
 
-    <!-- MÀN HÌNH NHẬP MÃ ĐỀ & THÔNG TIN -->
-    <div id="man-hinh-vao">
-      <div id="trangthai" class="trangthai tot">✅ Sẵn sàng — Nhập thông tin</div>
-      
-      <div class="thong-tin">
-        <input type="text" id="ho_ten" placeholder="Họ và tên học sinh">
-        <input type="text" id="lop" placeholder="Lớp">
-      </div>
-      
-      <input type="text" id="ma_de" placeholder="Mã đề (VD: DE001)" oninput="this.value=this.value.toUpperCase()">
-      <button class="btn-chinh" onclick="kiemTraMa()">🔍 Bắt đầu làm bài</button>
-      <p style="margin-top:12px; color:#888; font-size:14px; text-align:center;">💡 Mã thử: <strong>DE001</strong></p>
-    </div>
-
-    <!-- MÀN HÌNH LÀM BÀI -->
-    <div id="man-hinh-lam" class="an">
-      <h3 id="ten_de"></h3>
-      <p id="thong_tin_hs" style="color:#666; margin-bottom:15px;"></p>
-      <div id="danh_sach_cau"></div>
-      <button class="btn-nop" onclick="nopBai()">📤 Nộp bài & Xem điểm</button>
-    </div>
-
-    <!-- MÀN HÌNH KẾT QUẢ -->
-    <div id="man-hinh-ketqua" class="an">
-      <div id="noi_dung_kq"></div>
-      <button class="btn-chinh" onclick="lamLai()">🔄 Làm lại</button>
-    </div>
+  <!-- MÀN HÌNH BẮT ĐẦU -->
+  <div id="man-dau">
+    <input type="text" id="ten" placeholder="Họ và tên học sinh">
+    <input type="text" id="lop" placeholder="Lớp">
+    <input type="text" id="ma" placeholder="Mã đề: DE001" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn-tim" onclick="batDau()">Bắt đầu làm bài</button>
+    <p style="text-align:center;margin-top:10px;color:#888">💡 Thử mã: <b>DE001</b></p>
   </div>
 
-  <script>
-    // ========== DANH SÁCH ĐỀ CỦA THẦY ==========
-    const DANH_SACH_DE = {
-      "DE001": {
-        ten_de: "Đề kiểm tra tổng hợp",
-        cau_hoi: [
-          {
-            noi_dung: "Câu 1: Kết quả của 15 + 9 bằng bao nhiêu?",
-            lua_chon: ["22", "23", "24", "25"],
-            dap_an_dung: 3
-          },
-          {
-            noi_dung: "Câu 2: Thủ đô nước Cộng hòa Xã hội Chủ nghĩa Việt Nam là đâu?",
-            lua_chon: ["Thành phố Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"],
-            dap_an_dung: 2
-          },
-          {
-            noi_dung: "Câu 3: Ngày Quốc tế Lao động là ngày nào?",
-            lua_chon: ["1/1", "8/3", "1/5", "2/9"],
-            dap_an_dung: 3
-          }
-        ]
-      }
-      // Thêm đề mới theo mẫu trên
-    };
+  <!-- MÀN HÌNH LÀM BÀI -->
+  <div id="man-lam" class="an">
+    <h3 id="ten-de"></h3>
+    <p id="thong-tin" style="color:#666;margin-bottom:15px"></p>
+    <div id="danh-cau"></div>
+    <button class="btn-cam" onclick="nopBai()">📤 Nộp bài & Xem điểm</button>
+  </div>
 
-    let deDangChon = null;
-    let dapAnCuaHS = {};
-    let thongTinHS = { hoten: "", lop: "" };
+  <!-- MÀN HÌNH KẾT QUẢ -->
+  <div id="man-kq" class="an">
+    <div id="noi-dung-kq"></div>
+    <button class="btn-tim" onclick="lamLai()">🔄 Làm lại</button>
+  </div>
+</div>
 
-    function kiemTraMa() {
-      const ma = document.getElementById('ma_de').value.trim();
-      const hoten = document.getElementById('ho_ten').value.trim();
-      const lop = document.getElementById('lop').value.trim();
-      const tt = document.getElementById('trangthai');
+<script>
+// ========== DANH SÁCH ĐỀ ==========
+const DE = {
+  "DE001": {
+    ten: "Đề kiểm tra mẫu",
+    cau: [
+      {q: "15 + 9 = ?", a:["22","23","24","25"], d:3},
+      {q: "Thủ đô Việt Nam?", a:["TP.HCM","Hà Nội","Đà Nẵng","Huế"], d:2},
+      {q: "Ngày 1/5 là ngày gì?", a:["Tết Nguyên Đán","Ngày Quốc tế Phụ nữ","Ngày Quốc tế Lao động","Ngày Nhà giáo Việt Nam"], d:3}
+    ]
+  }
+};
 
-      if (!hoten || !lop) {
-        tt.className = 'trangthai sai';
-        tt.innerHTML = '⚠️ Nhập họ tên và lớp';
-        return;
-      }
-      
-      if (!ma) {
-        tt.className = 'trangthai sai';
-        tt.innerHTML = '⚠️ Nhập mã đề';
-        return;
-      }
+let hs = {ten:"", lop:"", ma:""};
+let traLoi = {};
 
-      if (!DANH_SACH_DE[ma]) {
-        tt.className = 'trangthai sai';
-        tt.innerHTML = '❌ Mã đề không tồn tại — thử: DE001';
-        return;
-      }
+function batDau(){
+  hs.ten = document.getElementById("ten").value.trim();
+  hs.lop = document.getElementById("lop").value.trim();
+  hs.ma = document.getElementById("ma").value.trim();
 
-      thongTinHS = { hoten, lop };
-      deDangChon = DANH_SACH_DE[ma];
-      dapAnCuaHS = {};
-      hienThiBaiLam();
-    }
+  if(!hs.ten || !hs.lop) return alert("Nhập Họ tên + Lớp");
+  if(!hs.ma) return alert("Nhập mã đề");
+  if(!DE[hs.ma]) return alert("Mã đề không tồn tại\n💡 Thử: DE001");
 
-    function hienThiBaiLam() {
-      document.getElementById('man-hinh-vao').classList.add('an');
-      document.getElementById('man-hinh-lam').classList.remove('an');
-      
-      document.getElementById('ten_de').innerText = deDangChon.ten_de;
-      document.getElementById('thong_tin_hs').innerText = `Học sinh: ${thongTinHS.hoten} | Lớp: ${thongTinHS.lop}`;
-      
-      const khung = document.getElementById('danh_sach_cau');
-      khung.innerHTML = "";
+  // Ẩn màn hình đầu → hiện bài làm
+  document.getElementById("man-dau").classList.add("an");
+  document.getElementById("man-lam").classList.remove("an");
+  document.getElementById("ten-de").innerText = DE[hs.ma].ten;
+  document.getElementById("thong-tin").innerText = `${hs.ten} — Lớp ${hs.lop}`;
+  
+  // Vẽ các câu hỏi
+  let html = "";
+  DE[hs.ma].cau.forEach((cau, i)=>{
+    html += `<div class="cau"><p><b>Câu ${i+1}:</b> ${cau.q}</p>`;
+    cau.a.forEach((ans, j)=>{
+      let c = String.fromCharCode(65+j);
+      html += `<label class="lua-chon" id="chon-${i+1}-${j}" onclick="chon(${i+1},${j})">${c}. ${ans}</label>`;
+    });
+    html += `</div>`;
+  });
+  document.getElementById("danh-cau").innerHTML = html;
+}
 
-      deDangChon.cau_hoi.forEach((cau, index) => {
-        const maCau = index + 1;
-        const divCau = document.createElement('div');
-        divCau.className = 'cau-hoi';
-        divCau.innerHTML = `<p>${cau.noi_dung}</p>`;
-        
-        cau.lua_chon.forEach((chon, viTri) => {
-          const nhan = String.fromCharCode(65 + viTri); // A, B, C, D
-          divCau.innerHTML += `
-            <label class="lua-chon" id="chon-${maCau}-${viTri}" onclick="chonDapAn(${maCau}, ${viTri})">
-              ${nhan}. ${chon}
-            </label>
-          `;
-        });
-        khung.appendChild(divCau);
-      });
-    }
+function chon(cau, vt){
+  traLoi[cau] = vt;
+  for(let i=0;i<4;i++) document.getElementById(`chon-${cau}-${i}`)?.classList.remove("chon");
+  document.getElementById(`chon-${cau}-${vt}`).classList.add("chon");
+}
 
-    function chonDapAn(maCau, viTri) {
-      dapAnCuaHS[maCau] = viTri;
-      // Xóa chọn cũ
-      for (let i = 0; i < 4; i++) {
-        document.getElementById(`chon-${maCau}-${i}`)?.classList.remove('chon');
-      }
-      // Đánh dấu chọn mới
-      document.getElementById(`chon-${maCau}-${viTri}`).classList.add('chon');
-    }
+function nopBai(){
+  let d = 0, t = DE[hs.ma].cau.length, chiTiet = "";
+  for(let i=0;i<t;i++){
+    let cau = DE[hs.ma].cau[i], traloi = traLoi[i+1];
+    let dung = traloi === cau.d;
+    if(dung) d++;
+    let chon = traloi!==undefined ? String.fromCharCode(65+traloi) : "Chưa chọn";
+    let dungsai = String.fromCharCode(65+cau.d);
+    chiTiet += `<p style="margin:4px 0">Câu ${i+1}: ${dung?"✅ Đúng":"❌ Sai"} — Bạn ${chon} | Đáp án ${dungsai}</p>`;
+  }
+  let diem = Math.round((d/t)*10*10)/10;
+  let xep = diem>=8?"Xuất sắc":diem>=6.5?"Khá":diem>=5?"Trung bình":"Chưa đạt";
+  let mau = diem>=5?"dung":"sai";
 
-    function nopBai() {
-      const tongCau = deDangChon.cau_hoi.length;
-      let dung = 0;
-      let chiTiet = "";
+  document.getElementById("man-lam").classList.add("an");
+  document.getElementById("man-kq").classList.remove("an");
+  document.getElementById("noi-dung-kq").innerHTML = `
+    <div class="kq ${mau}">
+      <h3>🎉 Kết quả</h3>
+      <p><strong>${hs.ten}</strong> — ${hs.lop}</p>
+      <p style="font-size:36px;font-weight:bold;margin:10px 0">${diem}/10</p>
+      <p style="font-size:18px">${xep}</p>
+      <p>Đúng ${d}/${t} câu</p>
+      <hr style="margin:15px 0;border:0;border-top:1px solid #ddd">
+      ${chiTiet}
+    </div>
+  `;
+}
 
-      for (let i = 0; i < tongCau; i++) {
-        const maCau = i + 1;
-        const cau = deDangChon.cau_hoi[i];
-        const traLoi = dapAnCuaHS[maCau];
-        const dungCau = traLoi === cau.dap_an_dung;
-        if (dungCau) dung++;
-        const nhanTraLoi = traLoi !== undefined ? String.fromCharCode(65 + traLoi) : "Chưa chọn";
-        const nhanDung = String.fromCharCode(65 + cau.dap_an_dung);
-        chiTiet += `<p style="margin:4px 0;">Câu ${maCau}: ${dungCau ? '✅ Đúng' : '❌ Sai'} — Bạn chọn ${nhanTraLoi} | Đáp án đúng: ${nhanDung}</p>`;
-      }
+function lamLai(){
+  document.getElementById("man-kq").classList.add("an");
+  document.getElementById("man-dau").classList.remove("an");
+  document.getElementById("ten").value = "";
+  document.getElementById("lop").value = "";
+  document.getElementById("ma").value = "";
+  traLoi = {};
+}
 
-      const diem = Math.round((dung / tongCau) * 10 * 10) / 10;
-      const loai = diem >= 8 ? "Xuất sắc" : diem >= 6.5 ? "Khá" : diem >= 5 ? "Trung bình" : "Chưa đạt";
-      const mau = diem >= 5 ? "dung" : "sai-kq";
-
-      document.getElementById('man-hinh-lam').classList.add('an');
-      document.getElementById('man-hinh-ketqua').classList.remove('an');
-      
-      document.getElementById('noi_dung_kq').innerHTML = `
-        <div class="ket-qua ${mau}">
-          <h3>🎉 Kết quả bài làm</h3>
-          <p style="margin:10px 0;">Họ tên: <strong>${thongTinHS.hoten}</strong></p>
-          <p style="margin:6px 0;">Lớp: <strong>${thongTinHS.lop}</strong></p>
-          <p style="margin:15px 0; font-size:32px; font-weight:bold;">${diem}/10</p>
-          <p style="font-size:18px; font-weight:600;">${loai}</p>
-          <p style="margin-top:12px;">Đúng ${dung}/${tongCau} câu</p>
-          <hr style="margin:15px 0; border:none; border-top:1px solid #ddd;">
-          ${chiTiet}
-        </div>
-      `;
-    }
-
-    function lamLai() {
-      document.getElementById('man-hinh-ketqua').classList.add('an');
-      document.getElementById('man-hinh-vao').classList.remove('an');
-      document.getElementById('ma_de').value = "";
-      document.getElementById('ho_ten').value = "";
-      document.getElementById('lop').value = "";
-      deDangChon = null;
-      dapAnCuaHS = {};
-    }
-
-    // Tự động điền mã đề nếu có trong link
-    window.onload = function() {
-      const m = new URLSearchParams(window.location.search).get('m');
-      if (m) document.getElementById('ma_de').value = m.toUpperCase();
-    };
-  </script>
+window.onload = ()=>{
+  let m = new URLSearchParams(location.search).get("m");
+  if(m) document.getElementById("ma").value = m.toUpperCase();
+};
+</script>
 </body>
 </html>
